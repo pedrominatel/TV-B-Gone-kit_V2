@@ -4,9 +4,9 @@ The original (V1.2) <a href="http://www.adafruit.com/products/73">TV-B-Gone kit<
   
 I am currently working on a new (V2) TV-B-Gone kit. The first iteration uses a small-form ESP32 board, making it easier to solder, and easier to re-program for total beginners. This new version also uses a MOSFET, which allows for fewer parts, and allows for a longer range for turning off TVs in public places!  
   
-Here is a 3D model of the preliminary PCB, for giving workshops:  
-![tvbgone_kit_v2 0_3Dview](https://github.com/user-attachments/assets/32d0d371-b955-40d1-87db-9208d72992a9)  
-  
+Photo of a completed first draft of the kit, for giving workshops:  
+![PXL_20260212_211537771](https://github.com/user-attachments/assets/2c68db52-bae4-463f-90b8-3bed8a5e421f)
+
 ## Project Info  
   
 Imagine a dystopian future, filled with monitors, marketing at us everywhere we go. Sadly, we are living that future now. This kit is super useful, not only for yourself, but for everyone! And while maybe that's dramatic, the TV-B-Gone is perfect for playing pranks on your friends during the Super Bowl or getting some peace and quiet during dinner.  
