@@ -26,8 +26,8 @@ TV-B-Gone WORLDcodes for Arduino version 0.002
   20-Jun-2025
   BenBE and Mitch Altman
   The POWER-Codes here are the same as the original compressed codes
-       except the indices to the On-Time/Off-Time pairs table for each Off-Code are no longer data-compressed.
-  The "convertWorldCodes.py" script converts from the original to the new version of the Off-Codes in the "extractedWorldCodeData.json" file
+       except the indices to the On-Time/Off-Time pairs table for each POWER-Code are no longer data-compressed.
+  The "convertWorldCodes.py" script converts from the original to the new version of the POWER-Codes in the "extractedWorldCodeData.json" file
 
   25-Jun-2025
   This "json2cppConvert.py" script to create the new "WORLDcodes.txt" file from the "extractedWorldCodesData.json" file
@@ -42,6 +42,9 @@ TV-B-Gone WORLDcodes for Arduino version 0.002
 
   21-Jan-2026   Mitch Altman
   Updated for ESP32-C3 Super Mini board
+
+  29-Mar-2026   Mitch Altman
+  Updated transmission sequence and added the newest POWER-Codes from the TV-B-Gone kit v1.3 WORLDcodes.c file
 
 
 
@@ -102,6 +105,244 @@ TV-B-Gone WORLDcodes for Arduino version 0.002
 
 **************************************************/
 
+
+
+//=================================================
+//=================================================
+//=================================================
+//
+// Here are the latest 10 POWER-codes, 
+//    added from the TV-B-Gone v1.3 WORLDcodes.c file, 
+//    and modified for the new format (without index compression)
+//
+//=================================================
+//=================================================
+//=================================================
+
+
+// code_NEC
+//
+// table of On-Time/Off-Time pairs
+uint32_t code_NECPairs[] = {
+	8920, 4450,
+	560, 560,
+	560, 1680,
+};
+// table of indices to On-Time/Off-Time pairs
+uint8_t code_NECSequence[] = {
+	0, 1, 1, 1, 2, 2, 2, 1, 1, 2, 2, 2, 1, 1, 1, 2, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 1
+};
+// POWER-Code table
+struct IrCode code_NECCode = {
+	38338,     // carrier frequency
+	34,		// number of On-Time/Off-Time pairs in this POWER-Code
+	code_NECPairs,
+	code_NECSequence
+};
+
+
+// code_TCL
+//
+// table of On-Time/Off-Time pairs
+uint32_t code_TCLPairs[] = {
+	9000, 4500,
+	560, 560,
+	560, 1690,
+};
+// table of indices to On-Time/Off-Time pairs
+uint8_t code_TCLSequence[] = {
+	0, 1, 2, 1, 2, 1, 2, 2, 2, 2, 2, 2, 1, 1, 1, 2, 2, 2, 2, 2, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1
+};
+// POWER-Code table
+struct IrCode code_TCLCode = {
+	38000,     // carrier frequency
+	34,		// number of On-Time/Off-Time pairs in this POWER-Code
+	code_TCLPairs,
+	code_TCLSequence
+};
+
+
+// code_Grundig
+//
+// table of On-Time/Off-Time pairs
+uint32_t code_GrundigPairs[] = {
+	870, 800,
+	1720, 810,
+	880, 800,
+	880, 830,
+	870, 770,
+	900, 800,
+	870, 1610,
+	1720, 820,
+	870, 86390,
+	840, 830,
+	1740, 790,
+	840, 1640,
+	1690, 840,
+};
+// table of indices to On-Time/Off-Time pairs
+uint8_t code_GrundigSequence[] = {
+	0, 0, 1, 2, 3, 4, 5, 0, 6, 0, 7, 8, 9, 9, 10, 9, 9, 9, 9, 9, 11, 9, 12, 9
+};
+// POWER-Code table
+struct IrCode code_GrundigCode = {
+	38000,     // carrier frequency
+	24,		// number of On-Time/Off-Time pairs in this POWER-Code
+	code_GrundigPairs,
+	code_GrundigSequence
+};
+
+
+// code_Samsung
+//
+// table of On-Time/Off-Time pairs
+uint32_t code_SamsungPairs[] = {
+	4500, 4500,
+	550, 1650,
+	550, 550,
+};
+// table of indices to On-Time/Off-Time pairs
+uint8_t code_SamsungSequence[] = {
+	0, 1, 1, 1, 2, 2, 2, 2, 2, 1, 1, 1, 2, 2, 2, 2, 2, 2, 1, 1, 2, 2, 1, 1, 1, 1, 2, 2, 1, 1, 2, 2, 2, 2
+};
+// POWER-Code table
+struct IrCode code_SamsungCode = {
+	38000,     // carrier frequency
+	34,		// number of On-Time/Off-Time pairs in this POWER-Code
+	code_SamsungPairs,
+	code_SamsungSequence
+};
+
+
+// code_Roku
+//
+// table of On-Time/Off-Time pairs
+uint32_t code_RokuPairs[] = {
+	9000, 4500,
+	560, 560,
+	560, 1690,
+};
+// table of indices to On-Time/Off-Time pairs
+uint8_t code_RokuSequence[] = {
+	0, 1, 2, 1, 2, 1, 2, 2, 2, 2, 2, 2, 1, 1, 1, 2, 2, 2, 2, 2, 1, 2, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1
+};
+struct IrCode code_RokuCode = {
+	38000,     // carrier frequency
+	34,		// number of On-Time/Off-Time pairs in this POWER-Code
+	code_RokuPairs,
+	code_RokuSequence
+};
+
+
+// code_Samsung2
+//
+// table of On-Time/Off-Time pairs
+uint32_t code_Samsung2Pairs[] = {
+	4500, 4470,
+	570, 1660,
+	560, 1660,
+	560, 560,
+	540, 560,
+	540, 1680,
+	540, 1660,
+	570, 1690,
+	540, 1690,
+	540, 42970,
+	540, 1670,
+	570, 560,
+	570, 1680,
+	540, 42960,
+	560, 1670,
+	4500, 4460,
+	560, 1690,
+};
+// table of indices to On-Time/Off-Time pairs
+uint8_t code_Samsung2Sequence[] = {
+	0, 1, 2, 2, 3, 4, 4, 4, 4, 5, 6, 7, 4, 4, 4, 4, 4, 4, 5, 4, 4, 4, 4, 4,
+	4, 5, 4, 5, 5, 6, 7, 8, 6, 3, 4, 4, 4, 9, 0, 1, 2, 2, 3, 4, 4, 4, 4, 8, 
+	8, 10, 11, 4, 4, 4, 4, 4, 8, 4, 4, 4, 4, 4, 4, 8, 4, 5, 5, 6, 12, 8, 6, 11,
+	4, 4, 4, 13, 0, 14, 1, 1, 11, 4, 4, 4, 4, 8, 8, 6, 3, 4, 4, 4, 4, 4, 8, 4, 
+	4, 4, 4, 4, 4, 5, 4, 5, 5, 6, 12, 6, 1, 11, 4, 4, 4, 13, 15, 2, 2, 2, 3, 4,
+	4, 4, 4, 8, 8, 6, 3, 4, 4, 4, 4, 4, 5, 4, 4, 4, 4, 4, 4, 8, 4, 8, 8, 6,
+	16, 10, 1, 11, 4, 4, 4, 4
+};
+struct IrCode code_Samsung2Code = {
+	38000,     // carrier frequency
+	152,		// number of On-Time/Off-Time pairs in this POWER-Code
+	code_Samsung2Pairs,
+	code_Samsung2Sequence
+};
+
+
+// code_Hisense
+//
+// table of On-Time/Off-Time pairs
+uint32_t code_HisensePairs[] = {
+	9000, 4500,
+	560, 560,
+	560, 1690,
+};
+// table of indices to On-Time/Off-Time pairs
+uint8_t code_HisenseSequence[] = {
+      0, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 1, 2, 2, 1, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1
+};
+struct IrCode code_HisenseCode = {
+	38000,     // carrier frequency
+	34,		// number of On-Time/Off-Time pairs in this POWER-Code
+	code_HisensePairs,
+	code_HisenseSequence
+};
+
+
+// code_Toshiba
+//
+// table of On-Time/Off-Time pairs
+uint32_t code_ToshibaPairs[] = {
+	9000, 4500,
+	560, 560,
+	560, 1690,
+};
+// table of indices to On-Time/Off-Time pairs
+uint8_t code_ToshibaSequence[] = {
+	0, 1, 2, 1, 1, 1, 1, 1, 1, 2, 1, 2, 2, 2, 2, 2, 1, 1, 2, 2, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1
+};
+struct IrCode code_ToshibaCode = {
+	38000,     // carrier frequency
+	34,		// number of On-Time/Off-Time pairs in this POWER-Code
+	code_ToshibaPairs,
+	code_ToshibaSequence
+};
+
+
+// code_samsungOFF
+//
+// table of On-Time/Off-Time pairs
+uint32_t code_samsungOFFPairs[] = {
+	810, 860,
+	810, 2960,
+	810, 33490,
+	3280, 3310,
+};
+// table of indices to On-Time/Off-Time pairs
+uint8_t code_samsungOFFSequence[] = {
+	0, 1, 1, 1, 2, 2, 2, 2, 2, 1, 1, 1, 2, 2, 2, 2, 2, 2, 1, 2, 2, 2, 2, 2, 2, 1, 2, 1, 1, 1, 1, 1, 1, 3, 
+	0, 1, 1, 1, 2, 2, 2, 2, 2, 1, 1, 1, 2, 2, 2, 2, 2, 2, 1, 2, 2, 2, 2, 2, 2, 1, 2, 1, 1, 1, 1, 1, 1, 3
+};
+struct IrCode code_samsungOFFCode = {
+	37736,     // carrier frequency
+	68,		// number of On-Time/Off-Time pairs in this POWER-Code
+	code_samsungOFFPairs,
+	code_samsungOFFSequence
+};
+
+
+
+//=================================================
+//=================================================
+//=================================================
+
+
+
 // code_na000
 //
 // table of On-Time/Off-Time pairs
@@ -118,7 +359,7 @@ uint8_t code_na000Sequence[] = {
 // POWER-Code table
 struct IrCode code_na000Code  = {
   38400,     // carrier frequency
-  26,        // number of On-Time/Off-Time pairs in this Off-Code
+  26,        // number of On-Time/Off-Time pairs in this POWER-Code
   code_na000Pairs,
   code_na000Sequence
 };
@@ -140,7 +381,7 @@ uint8_t code_na001Sequence[] = {
 // POWER-Code table
 struct IrCode code_na001Code  = {
   57143,     // carrier frequency
-  52,        // number of On-Time/Off-Time pairs in this Off-Code
+  52,        // number of On-Time/Off-Time pairs in this POWER-Code
   code_na001Pairs,
   code_na001Sequence
 };
@@ -163,7 +404,7 @@ uint8_t code_na002Sequence[] = {
 // POWER-Code table
 struct IrCode code_na002Code  = {
   37037,     // carrier frequency
-  100,       // number of On-Time/Off-Time pairs in this Off-Code
+  100,       // number of On-Time/Off-Time pairs in this POWER-Code
   code_na002Pairs,
   code_na002Sequence
 };
@@ -185,7 +426,7 @@ uint8_t code_na003Sequence[] = {
 // POWER-Code table
 struct IrCode code_na003Code  = {
   38610,     // carrier frequency
-  64,        // number of On-Time/Off-Time pairs in this Off-Code
+  64,        // number of On-Time/Off-Time pairs in this POWER-Code
   code_na003Pairs,
   code_na003Sequence
 };
@@ -210,7 +451,7 @@ uint8_t code_na004Sequence[] = {
 // POWER-Code table
 struct IrCode code_na004Code  = {
   38610,     // carrier frequency
-  38,        // number of On-Time/Off-Time pairs in this Off-Code
+  38,        // number of On-Time/Off-Time pairs in this POWER-Code
   code_na004Pairs,
   code_na004Sequence
 };
@@ -233,7 +474,7 @@ uint8_t code_na005Sequence[] = {
 // POWER-Code table
 struct IrCode code_na005Code  = {
   35714,     // carrier frequency
-  24,        // number of On-Time/Off-Time pairs in this Off-Code
+  24,        // number of On-Time/Off-Time pairs in this POWER-Code
   code_na005Pairs,
   code_na005Sequence
 };
@@ -256,7 +497,7 @@ uint8_t code_na006Sequence[] = {
 // POWER-Code table
 struct IrCode code_na006Code  = {
   38462,     // carrier frequency
-  68,        // number of On-Time/Off-Time pairs in this Off-Code
+  68,        // number of On-Time/Off-Time pairs in this POWER-Code
   code_na006Pairs,
   code_na006Sequence
 };
@@ -279,7 +520,7 @@ uint8_t code_na007Sequence[] = {
 // POWER-Code table
 struct IrCode code_na007Code  = {
   39216,     // carrier frequency
-  34,        // number of On-Time/Off-Time pairs in this Off-Code
+  34,        // number of On-Time/Off-Time pairs in this POWER-Code
   code_na007Pairs,
   code_na007Sequence
 };
@@ -302,7 +543,7 @@ uint8_t code_na008Sequence[] = {
 // POWER-Code table
 struct IrCode code_na008Code  = {
   38462,     // carrier frequency
-  68,        // number of On-Time/Off-Time pairs in this Off-Code
+  68,        // number of On-Time/Off-Time pairs in this POWER-Code
   code_na008Pairs,
   code_na008Sequence
 };
@@ -326,7 +567,7 @@ uint8_t code_na009Sequence[] = {
 // POWER-Code table
 struct IrCode code_na009Code  = {
   38462,     // carrier frequency
-  38,        // number of On-Time/Off-Time pairs in this Off-Code
+  38,        // number of On-Time/Off-Time pairs in this POWER-Code
   code_na009Pairs,
   code_na009Sequence
 };
@@ -348,7 +589,7 @@ uint8_t code_na010Sequence[] = {
 // POWER-Code table
 struct IrCode code_na010Code  = {
   38462,     // carrier frequency
-  52,        // number of On-Time/Off-Time pairs in this Off-Code
+  52,        // number of On-Time/Off-Time pairs in this POWER-Code
   code_na010Pairs,
   code_na010Sequence
 };
@@ -373,7 +614,7 @@ uint8_t code_na011Sequence[] = {
 // POWER-Code table
 struct IrCode code_na011Code  = {
   38462,     // carrier frequency
-  38,        // number of On-Time/Off-Time pairs in this Off-Code
+  38,        // number of On-Time/Off-Time pairs in this POWER-Code
   code_na011Pairs,
   code_na011Sequence
 };
@@ -396,7 +637,7 @@ uint8_t code_na012Sequence[] = {
 // POWER-Code table
 struct IrCode code_na012Code  = {
   38462,     // carrier frequency
-  52,        // number of On-Time/Off-Time pairs in this Off-Code
+  52,        // number of On-Time/Off-Time pairs in this POWER-Code
   code_na012Pairs,
   code_na012Sequence
 };
@@ -420,7 +661,7 @@ uint8_t code_na013Sequence[] = {
 // POWER-Code table
 struct IrCode code_na013Code  = {
   38462,     // carrier frequency
-  48,        // number of On-Time/Off-Time pairs in this Off-Code
+  48,        // number of On-Time/Off-Time pairs in this POWER-Code
   code_na013Pairs,
   code_na013Sequence
 };
@@ -445,7 +686,7 @@ uint8_t code_na014Sequence[] = {
 // POWER-Code table
 struct IrCode code_na014Code  = {
   38462,     // carrier frequency
-  38,        // number of On-Time/Off-Time pairs in this Off-Code
+  38,        // number of On-Time/Off-Time pairs in this POWER-Code
   code_na014Pairs,
   code_na014Sequence
 };
@@ -470,7 +711,7 @@ uint8_t code_na015Sequence[] = {
 // POWER-Code table
 struct IrCode code_na015Code  = {
   38462,     // carrier frequency
-  38,        // number of On-Time/Off-Time pairs in this Off-Code
+  38,        // number of On-Time/Off-Time pairs in this POWER-Code
   code_na015Pairs,
   code_na015Sequence
 };
@@ -491,7 +732,7 @@ uint8_t code_na016Sequence[] = {
 // POWER-Code table
 struct IrCode code_na016Code  = {
   34483,     // carrier frequency
-  34,        // number of On-Time/Off-Time pairs in this Off-Code
+  34,        // number of On-Time/Off-Time pairs in this POWER-Code
   code_na016Pairs,
   code_na016Sequence
 };
@@ -515,7 +756,7 @@ uint8_t code_na017Sequence[] = {
 // POWER-Code table
 struct IrCode code_na017Code  = {
   40000,     // carrier frequency
-  38,        // number of On-Time/Off-Time pairs in this Off-Code
+  38,        // number of On-Time/Off-Time pairs in this POWER-Code
   code_na017Pairs,
   code_na017Sequence
 };
@@ -538,7 +779,7 @@ uint8_t code_na018Sequence[] = {
 // POWER-Code table
 struct IrCode code_na018Code  = {
   38462,     // carrier frequency
-  136,       // number of On-Time/Off-Time pairs in this Off-Code
+  136,       // number of On-Time/Off-Time pairs in this POWER-Code
   code_na018Pairs,
   code_na018Sequence
 };
@@ -561,7 +802,7 @@ uint8_t code_na019Sequence[] = {
 // POWER-Code table
 struct IrCode code_na019Code  = {
   38462,     // carrier frequency
-  100,       // number of On-Time/Off-Time pairs in this Off-Code
+  100,       // number of On-Time/Off-Time pairs in this POWER-Code
   code_na019Pairs,
   code_na019Sequence
 };
@@ -586,7 +827,7 @@ uint8_t code_na020Sequence[] = {
 // POWER-Code table
 struct IrCode code_na020Code  = {
   38462,     // carrier frequency
-  38,        // number of On-Time/Off-Time pairs in this Off-Code
+  38,        // number of On-Time/Off-Time pairs in this POWER-Code
   code_na020Pairs,
   code_na020Sequence
 };
@@ -609,7 +850,7 @@ uint8_t code_na021Sequence[] = {
 // POWER-Code table
 struct IrCode code_na021Code  = {
   38462,     // carrier frequency
-  38,        // number of On-Time/Off-Time pairs in this Off-Code
+  38,        // number of On-Time/Off-Time pairs in this POWER-Code
   code_na021Pairs,
   code_na021Sequence
 };
@@ -633,7 +874,7 @@ uint8_t code_na022Sequence[] = {
 // POWER-Code table
 struct IrCode code_na022Code  = {
   38462,     // carrier frequency
-  38,        // number of On-Time/Off-Time pairs in this Off-Code
+  38,        // number of On-Time/Off-Time pairs in this POWER-Code
   code_na022Pairs,
   code_na022Sequence
 };
@@ -655,7 +896,7 @@ uint8_t code_na023Sequence[] = {
 // POWER-Code table
 struct IrCode code_na023Code  = {
   40000,     // carrier frequency
-  44,        // number of On-Time/Off-Time pairs in this Off-Code
+  44,        // number of On-Time/Off-Time pairs in this POWER-Code
   code_na023Pairs,
   code_na023Sequence
 };
@@ -678,7 +919,7 @@ uint8_t code_na024Sequence[] = {
 // POWER-Code table
 struct IrCode code_na024Code  = {
   38462,     // carrier frequency
-  26,        // number of On-Time/Off-Time pairs in this Off-Code
+  26,        // number of On-Time/Off-Time pairs in this POWER-Code
   code_na024Pairs,
   code_na024Sequence
 };
@@ -701,7 +942,7 @@ uint8_t code_na025Sequence[] = {
 // POWER-Code table
 struct IrCode code_na025Code  = {
   38462,     // carrier frequency
-  52,        // number of On-Time/Off-Time pairs in this Off-Code
+  52,        // number of On-Time/Off-Time pairs in this POWER-Code
   code_na025Pairs,
   code_na025Sequence
 };
@@ -724,7 +965,7 @@ uint8_t code_na026Sequence[] = {
 // POWER-Code table
 struct IrCode code_na026Code  = {
   39216,     // carrier frequency
-  34,        // number of On-Time/Off-Time pairs in this Off-Code
+  34,        // number of On-Time/Off-Time pairs in this POWER-Code
   code_na026Pairs,
   code_na026Sequence
 };
@@ -746,7 +987,7 @@ uint8_t code_na027Sequence[] = {
 // POWER-Code table
 struct IrCode code_na027Code  = {
   57143,     // carrier frequency
-  52,        // number of On-Time/Off-Time pairs in this Off-Code
+  52,        // number of On-Time/Off-Time pairs in this POWER-Code
   code_na027Pairs,
   code_na027Sequence
 };
@@ -768,7 +1009,7 @@ uint8_t code_na028Sequence[] = {
 // POWER-Code table
 struct IrCode code_na028Code  = {
   38610,     // carrier frequency
-  36,        // number of On-Time/Off-Time pairs in this Off-Code
+  36,        // number of On-Time/Off-Time pairs in this POWER-Code
   code_na028Pairs,
   code_na028Sequence
 };
@@ -791,7 +1032,7 @@ uint8_t code_na029Sequence[] = {
 // POWER-Code table
 struct IrCode code_na029Code  = {
   35842,     // carrier frequency
-  22,        // number of On-Time/Off-Time pairs in this Off-Code
+  22,        // number of On-Time/Off-Time pairs in this POWER-Code
   code_na029Pairs,
   code_na029Sequence
 };
@@ -815,7 +1056,7 @@ uint8_t code_na030Sequence[] = {
 // POWER-Code table
 struct IrCode code_na030Code  = {
   38462,     // carrier frequency
-  38,        // number of On-Time/Off-Time pairs in this Off-Code
+  38,        // number of On-Time/Off-Time pairs in this POWER-Code
   code_na030Pairs,
   code_na030Sequence
 };
@@ -838,7 +1079,7 @@ uint8_t code_na031Sequence[] = {
 // POWER-Code table
 struct IrCode code_na031Code  = {
   35842,     // carrier frequency
-  24,        // number of On-Time/Off-Time pairs in this Off-Code
+  24,        // number of On-Time/Off-Time pairs in this POWER-Code
   code_na031Pairs,
   code_na031Sequence
 };
@@ -862,7 +1103,7 @@ uint8_t code_na032Sequence[] = {
 // POWER-Code table
 struct IrCode code_na032Code  = {
   38462,     // carrier frequency
-  38,        // number of On-Time/Off-Time pairs in this Off-Code
+  38,        // number of On-Time/Off-Time pairs in this POWER-Code
   code_na032Pairs,
   code_na032Sequence
 };
@@ -885,7 +1126,7 @@ uint8_t code_na033Sequence[] = {
 // POWER-Code table
 struct IrCode code_na033Code  = {
   38462,     // carrier frequency
-  100,        // number of On-Time/Off-Time pairs in this Off-Code
+  100,        // number of On-Time/Off-Time pairs in this POWER-Code
   code_na033Pairs,
   code_na033Sequence
 };
@@ -910,7 +1151,7 @@ uint8_t code_na034Sequence[] = {
 // POWER-Code table
 struct IrCode code_na034Code  = {
   38462,     // carrier frequency
-  38,        // number of On-Time/Off-Time pairs in this Off-Code
+  38,        // number of On-Time/Off-Time pairs in this POWER-Code
   code_na034Pairs,
   code_na034Sequence
 };
@@ -932,7 +1173,7 @@ uint8_t code_na035Sequence[] = {
 // POWER-Code table
 struct IrCode code_na035Code  = {
   41667,     // carrier frequency
-  22,        // number of On-Time/Off-Time pairs in this Off-Code
+  22,        // number of On-Time/Off-Time pairs in this POWER-Code
   code_na035Pairs,
   code_na035Sequence
 };
@@ -954,7 +1195,7 @@ uint8_t code_na036Sequence[] = {
 // POWER-Code table
 struct IrCode code_na036Code  = {
   37037,     // carrier frequency
-  11,        // number of On-Time/Off-Time pairs in this Off-Code
+  11,        // number of On-Time/Off-Time pairs in this POWER-Code
   code_na036Pairs,
   code_na036Sequence
 };
@@ -975,7 +1216,7 @@ uint8_t code_na037Sequence[] = {
 // POWER-Code table
 struct IrCode code_na037Code  = {
   41667,     // carrier frequency
-  11,        // number of On-Time/Off-Time pairs in this Off-Code
+  11,        // number of On-Time/Off-Time pairs in this POWER-Code
   code_na037Pairs,
   code_na037Sequence
 };
@@ -999,7 +1240,7 @@ uint8_t code_na038Sequence[] = {
 // POWER-Code table
 struct IrCode code_na038Code  = {
   40000,     // carrier frequency
-  38,        // number of On-Time/Off-Time pairs in this Off-Code
+  38,        // number of On-Time/Off-Time pairs in this POWER-Code
   code_na038Pairs,
   code_na038Sequence
 };
@@ -1019,7 +1260,7 @@ uint8_t code_na039Sequence[] = {
 // POWER-Code table
 struct IrCode code_na039Code  = {
   40000,     // carrier frequency
-  4,         // number of On-Time/Off-Time pairs in this Off-Code
+  4,         // number of On-Time/Off-Time pairs in this POWER-Code
   code_na039Pairs,
   code_na039Sequence
 };
@@ -1040,13 +1281,14 @@ uint8_t code_na040Sequence[] = {
 // POWER-Code table
 struct IrCode code_na040Code  = {
   40000,     // carrier frequency
-  8,         // number of On-Time/Off-Time pairs in this Off-Code
+  8,         // number of On-Time/Off-Time pairs in this POWER-Code
   code_na040Pairs,
   code_na040Sequence
 };
 
 
-// code_na041
+/*
+// code_na041  --  duplicate of na000
 //
 // table of On-Time/Off-Time pairs
 uint32_t code_na041Pairs[] = {
@@ -1062,10 +1304,11 @@ uint8_t code_na041Sequence[] = {
 // POWER-Code table
 struct IrCode code_na041Code  = {
   76923,     // carrier frequency
-  26,        // number of On-Time/Off-Time pairs in this Off-Code
+  26,        // number of On-Time/Off-Time pairs in this POWER-Code
   code_na041Pairs,
   code_na041Sequence
 };
+*/
 
 
 // code_na042
@@ -1086,7 +1329,7 @@ uint8_t code_na042Sequence[] = {
 // POWER-Code table
 struct IrCode code_na042Code  = {
   40000,     // carrier frequency
-  38,        // number of On-Time/Off-Time pairs in this Off-Code
+  38,        // number of On-Time/Off-Time pairs in this POWER-Code
   code_na042Pairs,
   code_na042Sequence
 };
@@ -1108,7 +1351,7 @@ uint8_t code_na043Sequence[] = {
 // POWER-Code table
 struct IrCode code_na043Code  = {
   40000,     // carrier frequency
-  24,        // number of On-Time/Off-Time pairs in this Off-Code
+  24,        // number of On-Time/Off-Time pairs in this POWER-Code
   code_na043Pairs,
   code_na043Sequence
 };
@@ -1132,7 +1375,7 @@ uint8_t code_na044Sequence[] = {
 // POWER-Code table
 struct IrCode code_na044Code  = {
   40000,     // carrier frequency
-  38,        // number of On-Time/Off-Time pairs in this Off-Code
+  38,        // number of On-Time/Off-Time pairs in this POWER-Code
   code_na044Pairs,
   code_na044Sequence
 };
@@ -1156,7 +1399,7 @@ uint8_t code_na045Sequence[] = {
 // POWER-Code table
 struct IrCode code_na045Code  = {
   38462,     // carrier frequency
-  40,        // number of On-Time/Off-Time pairs in this Off-Code
+  40,        // number of On-Time/Off-Time pairs in this POWER-Code
   code_na045Pairs,
   code_na045Sequence
 };
@@ -1181,7 +1424,7 @@ uint8_t code_na046Sequence[] = {
 // POWER-Code table
 struct IrCode code_na046Code  = {
   29412,     // carrier frequency
-  23,        // number of On-Time/Off-Time pairs in this Off-Code
+  23,        // number of On-Time/Off-Time pairs in this POWER-Code
   code_na046Pairs,
   code_na046Sequence
 };
@@ -1205,7 +1448,7 @@ uint8_t code_na047Sequence[] = {
 // POWER-Code table
 struct IrCode code_na047Code  = {
   40000,     // carrier frequency
-  38,        // number of On-Time/Off-Time pairs in this Off-Code
+  38,        // number of On-Time/Off-Time pairs in this POWER-Code
   code_na047Pairs,
   code_na047Sequence
 };
@@ -1229,7 +1472,7 @@ uint8_t code_na048Sequence[] = {
 // POWER-Code table
 struct IrCode code_na048Code  = {
   40000,     // carrier frequency
-  38,        // number of On-Time/Off-Time pairs in this Off-Code
+  38,        // number of On-Time/Off-Time pairs in this POWER-Code
   code_na048Pairs,
   code_na048Sequence
 };
@@ -1249,7 +1492,7 @@ uint8_t code_na049Sequence[] = {
 // POWER-Code table
 struct IrCode code_na049Code  = {
   45455,     // carrier frequency
-  11,        // number of On-Time/Off-Time pairs in this Off-Code
+  11,        // number of On-Time/Off-Time pairs in this POWER-Code
   code_na049Pairs,
   code_na049Sequence
 };
@@ -1271,7 +1514,7 @@ uint8_t code_na050Sequence[] = {
 // POWER-Code table
 struct IrCode code_na050Code  = {
   55556,     // carrier frequency
-  48,        // number of On-Time/Off-Time pairs in this Off-Code
+  48,        // number of On-Time/Off-Time pairs in this POWER-Code
   code_na050Pairs,
   code_na050Sequence
 };
@@ -1295,7 +1538,7 @@ uint8_t code_na051Sequence[] = {
 // POWER-Code table
 struct IrCode code_na051Code  = {
   40000,     // carrier frequency
-  38,        // number of On-Time/Off-Time pairs in this Off-Code
+  38,        // number of On-Time/Off-Time pairs in this POWER-Code
   code_na051Pairs,
   code_na051Sequence
 };
@@ -1319,7 +1562,7 @@ uint8_t code_na052Sequence[] = {
 // POWER-Code table
 struct IrCode code_na052Code  = {
   40000,     // carrier frequency
-  38,        // number of On-Time/Off-Time pairs in this Off-Code
+  38,        // number of On-Time/Off-Time pairs in this POWER-Code
   code_na052Pairs,
   code_na052Sequence
 };
@@ -1341,7 +1584,7 @@ uint8_t code_na053Sequence[] = {
 // POWER-Code table
 struct IrCode code_na053Code  = {
   55556,     // carrier frequency
-  30,        // number of On-Time/Off-Time pairs in this Off-Code
+  30,        // number of On-Time/Off-Time pairs in this POWER-Code
   code_na053Pairs,
   code_na053Sequence
 };
@@ -1363,7 +1606,7 @@ uint8_t code_na054Sequence[] = {
 // POWER-Code table
 struct IrCode code_na054Code  = {
   55556,     // carrier frequency
-  28,        // number of On-Time/Off-Time pairs in this Off-Code
+  28,        // number of On-Time/Off-Time pairs in this POWER-Code
   code_na054Pairs,
   code_na054Sequence
 };
@@ -1385,7 +1628,7 @@ uint8_t code_na055Sequence[] = {
 // POWER-Code table
 struct IrCode code_na055Code  = {
   0,         // carrier frequency
-  27,        // number of On-Time/Off-Time pairs in this Off-Code
+  27,        // number of On-Time/Off-Time pairs in this POWER-Code
   code_na055Pairs,
   code_na055Sequence
 };
@@ -1407,7 +1650,7 @@ uint8_t code_na056Sequence[] = {
 // POWER-Code table
 struct IrCode code_na056Code  = {
   37175,     // carrier frequency
-  8,         // number of On-Time/Off-Time pairs in this Off-Code
+  8,         // number of On-Time/Off-Time pairs in this POWER-Code
   code_na056Pairs,
   code_na056Sequence
 };
@@ -1429,7 +1672,7 @@ uint8_t code_na057Sequence[] = {
 // POWER-Code table
 struct IrCode code_na057Code  = {
   40000,     // carrier frequency
-  14,        // number of On-Time/Off-Time pairs in this Off-Code
+  14,        // number of On-Time/Off-Time pairs in this POWER-Code
   code_na057Pairs,
   code_na057Sequence
 };
@@ -1452,7 +1695,7 @@ uint8_t code_na058Sequence[] = {
 // POWER-Code table
 struct IrCode code_na058Code  = {
   33333,     // carrier frequency
-  18,        // number of On-Time/Off-Time pairs in this Off-Code
+  18,        // number of On-Time/Off-Time pairs in this POWER-Code
   code_na058Pairs,
   code_na058Sequence
 };
@@ -1476,7 +1719,7 @@ uint8_t code_na059Sequence[] = {
 // POWER-Code table
 struct IrCode code_na059Code  = {
   40000,     // carrier frequency
-  38,        // number of On-Time/Off-Time pairs in this Off-Code
+  38,        // number of On-Time/Off-Time pairs in this POWER-Code
   code_na059Pairs,
   code_na059Sequence
 };
@@ -1500,7 +1743,7 @@ uint8_t code_na060Sequence[] = {
 // POWER-Code table
 struct IrCode code_na060Code  = {
   40000,     // carrier frequency
-  38,        // number of On-Time/Off-Time pairs in this Off-Code
+  38,        // number of On-Time/Off-Time pairs in this POWER-Code
   code_na060Pairs,
   code_na060Sequence
 };
@@ -1524,7 +1767,7 @@ uint8_t code_na061Sequence[] = {
 // POWER-Code table
 struct IrCode code_na061Code  = {
   40000,     // carrier frequency
-  38,        // number of On-Time/Off-Time pairs in this Off-Code
+  38,        // number of On-Time/Off-Time pairs in this POWER-Code
   code_na061Pairs,
   code_na061Sequence
 };
@@ -1548,7 +1791,7 @@ uint8_t code_na062Sequence[] = {
 // POWER-Code table
 struct IrCode code_na062Code  = {
   40000,     // carrier frequency
-  38,        // number of On-Time/Off-Time pairs in this Off-Code
+  38,        // number of On-Time/Off-Time pairs in this POWER-Code
   code_na062Pairs,
   code_na062Sequence
 };
@@ -1572,7 +1815,7 @@ uint8_t code_na063Sequence[] = {
 // POWER-Code table
 struct IrCode code_na063Code  = {
   40000,     // carrier frequency
-  38,        // number of On-Time/Off-Time pairs in this Off-Code
+  38,        // number of On-Time/Off-Time pairs in this POWER-Code
   code_na063Pairs,
   code_na063Sequence
 };
@@ -1594,7 +1837,7 @@ uint8_t code_na064Sequence[] = {
 // POWER-Code table
 struct IrCode code_na064Code  = {
   57143,     // carrier frequency
-  52,        // number of On-Time/Off-Time pairs in this Off-Code
+  52,        // number of On-Time/Off-Time pairs in this POWER-Code
   code_na064Pairs,
   code_na064Sequence
 };
@@ -1617,7 +1860,7 @@ uint8_t code_na065Sequence[] = {
 // POWER-Code table
 struct IrCode code_na065Code  = {
   59172,     // carrier frequency
-  78,        // number of On-Time/Off-Time pairs in this Off-Code
+  78,        // number of On-Time/Off-Time pairs in this POWER-Code
   code_na065Pairs,
   code_na065Sequence
 };
@@ -1639,7 +1882,7 @@ uint8_t code_na066Sequence[] = {
 // POWER-Code table
 struct IrCode code_na066Code  = {
   38462,     // carrier frequency
-  33,        // number of On-Time/Off-Time pairs in this Off-Code
+  33,        // number of On-Time/Off-Time pairs in this POWER-Code
   code_na066Pairs,
   code_na066Sequence
 };
@@ -1663,7 +1906,7 @@ uint8_t code_na067Sequence[] = {
 // POWER-Code table
 struct IrCode code_na067Code  = {
   40000,     // carrier frequency
-  38,        // number of On-Time/Off-Time pairs in this Off-Code
+  38,        // number of On-Time/Off-Time pairs in this POWER-Code
   code_na067Pairs,
   code_na067Sequence
 };
@@ -1685,7 +1928,7 @@ uint8_t code_na068Sequence[] = {
 // POWER-Code table
 struct IrCode code_na068Code  = {
   40000,     // carrier frequency
-  24,        // number of On-Time/Off-Time pairs in this Off-Code
+  24,        // number of On-Time/Off-Time pairs in this POWER-Code
   code_na068Pairs,
   code_na068Sequence
 };
@@ -1709,7 +1952,7 @@ uint8_t code_na069Sequence[] = {
 // POWER-Code table
 struct IrCode code_na069Code  = {
   40000,     // carrier frequency
-  38,        // number of On-Time/Off-Time pairs in this Off-Code
+  38,        // number of On-Time/Off-Time pairs in this POWER-Code
   code_na069Pairs,
   code_na069Sequence
 };
@@ -1731,7 +1974,7 @@ uint8_t code_na070Sequence[] = {
 // POWER-Code table
 struct IrCode code_na070Code  = {
   38462,     // carrier frequency
-  33,        // number of On-Time/Off-Time pairs in this Off-Code
+  33,        // number of On-Time/Off-Time pairs in this POWER-Code
   code_na070Pairs,
   code_na070Sequence
 };
@@ -1751,7 +1994,7 @@ uint8_t code_na071Sequence[] = {
 // POWER-Code table
 struct IrCode code_na071Code  = {
   55556,     // carrier frequency
-  8,         // number of On-Time/Off-Time pairs in this Off-Code
+  8,         // number of On-Time/Off-Time pairs in this POWER-Code
   code_na071Pairs,
   code_na071Sequence
 };
@@ -1775,7 +2018,7 @@ uint8_t code_na072Sequence[] = {
 // POWER-Code table
 struct IrCode code_na072Code  = {
   40000,     // carrier frequency
-  38,        // number of On-Time/Off-Time pairs in this Off-Code
+  38,        // number of On-Time/Off-Time pairs in this POWER-Code
   code_na072Pairs,
   code_na072Sequence
 };
@@ -1799,7 +2042,7 @@ uint8_t code_na073Sequence[] = {
 // POWER-Code table
 struct IrCode code_na073Code  = {
   40000,     // carrier frequency
-  38,        // number of On-Time/Off-Time pairs in this Off-Code
+  38,        // number of On-Time/Off-Time pairs in this POWER-Code
   code_na073Pairs,
   code_na073Sequence
 };
@@ -1823,7 +2066,7 @@ uint8_t code_na074Sequence[] = {
 // POWER-Code table
 struct IrCode code_na074Code  = {
   40000,     // carrier frequency
-  38,        // number of On-Time/Off-Time pairs in this Off-Code
+  38,        // number of On-Time/Off-Time pairs in this POWER-Code
   code_na074Pairs,
   code_na074Sequence
 };
@@ -1846,7 +2089,7 @@ uint8_t code_na075Sequence[] = {
 // POWER-Code table
 struct IrCode code_na075Code  = {
   41667,     // carrier frequency
-  52,        // number of On-Time/Off-Time pairs in this Off-Code
+  52,        // number of On-Time/Off-Time pairs in this POWER-Code
   code_na075Pairs,
   code_na075Sequence
 };
@@ -1870,7 +2113,7 @@ uint8_t code_na076Sequence[] = {
 // POWER-Code table
 struct IrCode code_na076Code  = {
   40000,     // carrier frequency
-  38,        // number of On-Time/Off-Time pairs in this Off-Code
+  38,        // number of On-Time/Off-Time pairs in this POWER-Code
   code_na076Pairs,
   code_na076Sequence
 };
@@ -1893,7 +2136,7 @@ uint8_t code_na077Sequence[] = {
 // POWER-Code table
 struct IrCode code_na077Code  = {
   35714,     // carrier frequency
-  22,        // number of On-Time/Off-Time pairs in this Off-Code
+  22,        // number of On-Time/Off-Time pairs in this POWER-Code
   code_na077Pairs,
   code_na077Sequence
 };
@@ -1914,7 +2157,7 @@ uint8_t code_na078Sequence[] = {
 // POWER-Code table
 struct IrCode code_na078Code  = {
   38462,     // carrier frequency
-  34,        // number of On-Time/Off-Time pairs in this Off-Code
+  34,        // number of On-Time/Off-Time pairs in this POWER-Code
   code_na078Pairs,
   code_na078Sequence
 };
@@ -1938,7 +2181,7 @@ uint8_t code_na079Sequence[] = {
 // POWER-Code table
 struct IrCode code_na079Code  = {
   40000,     // carrier frequency
-  38,        // number of On-Time/Off-Time pairs in this Off-Code
+  38,        // number of On-Time/Off-Time pairs in this POWER-Code
   code_na079Pairs,
   code_na079Sequence
 };
@@ -1960,7 +2203,7 @@ uint8_t code_na080Sequence[] = {
 // POWER-Code table
 struct IrCode code_na080Code  = {
   0,         // carrier frequency
-  27,        // number of On-Time/Off-Time pairs in this Off-Code
+  27,        // number of On-Time/Off-Time pairs in this POWER-Code
   code_na080Pairs,
   code_na080Sequence
 };
@@ -1982,7 +2225,7 @@ uint8_t code_na081Sequence[] = {
 // POWER-Code table
 struct IrCode code_na081Code  = {
   40000,     // carrier frequency
-  40,        // number of On-Time/Off-Time pairs in this Off-Code
+  40,        // number of On-Time/Off-Time pairs in this POWER-Code
   code_na081Pairs,
   code_na081Sequence
 };
@@ -2006,13 +2249,14 @@ uint8_t code_na082Sequence[] = {
 // POWER-Code table
 struct IrCode code_na082Code  = {
   35714,     // carrier frequency
-  24,        // number of On-Time/Off-Time pairs in this Off-Code
+  24,        // number of On-Time/Off-Time pairs in this POWER-Code
   code_na082Pairs,
   code_na082Sequence
 };
 
 
-// code_na083
+/*
+// code_na083  --  duplicate of na005
 //
 // table of On-Time/Off-Time pairs
 uint32_t code_na083Pairs[] = {
@@ -2029,10 +2273,11 @@ uint8_t code_na083Sequence[] = {
 // POWER-Code table
 struct IrCode code_na083Code  = {
   35714,     // carrier frequency
-  24,        // number of On-Time/Off-Time pairs in this Off-Code
+  24,        // number of On-Time/Off-Time pairs in this POWER-Code
   code_na083Pairs,
   code_na083Sequence
 };
+*/
 
 
 // code_na084
@@ -2052,7 +2297,7 @@ uint8_t code_na084Sequence[] = {
 // POWER-Code table
 struct IrCode code_na084Code  = {
   37037,     // carrier frequency
-  100,       // number of On-Time/Off-Time pairs in this Off-Code
+  100,       // number of On-Time/Off-Time pairs in this POWER-Code
   code_na084Pairs,
   code_na084Sequence
 };
@@ -2075,7 +2320,7 @@ uint8_t code_na085Sequence[] = {
 // POWER-Code table
 struct IrCode code_na085Code  = {
   38462,     // carrier frequency
-  44,        // number of On-Time/Off-Time pairs in this Off-Code
+  44,        // number of On-Time/Off-Time pairs in this POWER-Code
   code_na085Pairs,
   code_na085Sequence
 };
@@ -2098,7 +2343,7 @@ uint8_t code_na086Sequence[] = {
 // POWER-Code table
 struct IrCode code_na086Code  = {
   37175,     // carrier frequency
-  100,       // number of On-Time/Off-Time pairs in this Off-Code
+  100,       // number of On-Time/Off-Time pairs in this POWER-Code
   code_na086Pairs,
   code_na086Sequence
 };
@@ -2122,7 +2367,7 @@ uint8_t code_na087Sequence[] = {
 // POWER-Code table
 struct IrCode code_na087Code  = {
   38462,     // carrier frequency
-  38,        // number of On-Time/Off-Time pairs in this Off-Code
+  38,        // number of On-Time/Off-Time pairs in this POWER-Code
   code_na087Pairs,
   code_na087Sequence
 };
@@ -2146,7 +2391,7 @@ uint8_t code_na088Sequence[] = {
 // POWER-Code table
 struct IrCode code_na088Code  = {
   38610,     // carrier frequency
-  38,        // number of On-Time/Off-Time pairs in this Off-Code
+  38,        // number of On-Time/Off-Time pairs in this POWER-Code
   code_na088Pairs,
   code_na088Sequence
 };
@@ -2171,7 +2416,7 @@ uint8_t code_na089Sequence[] = {
 // POWER-Code table
 struct IrCode code_na089Code  = {
   38462,     // carrier frequency
-  38,        // number of On-Time/Off-Time pairs in this Off-Code
+  38,        // number of On-Time/Off-Time pairs in this POWER-Code
   code_na089Pairs,
   code_na089Sequence
 };
@@ -2195,7 +2440,7 @@ uint8_t code_na090Sequence[] = {
 // POWER-Code table
 struct IrCode code_na090Code  = {
   35714,     // carrier frequency
-  20,        // number of On-Time/Off-Time pairs in this Off-Code
+  20,        // number of On-Time/Off-Time pairs in this POWER-Code
   code_na090Pairs,
   code_na090Sequence
 };
@@ -2217,7 +2462,7 @@ uint8_t code_na091Sequence[] = {
 // POWER-Code table
 struct IrCode code_na091Code  = {
   58824,     // carrier frequency
-  52,        // number of On-Time/Off-Time pairs in this Off-Code
+  52,        // number of On-Time/Off-Time pairs in this POWER-Code
   code_na091Pairs,
   code_na091Sequence
 };
@@ -2239,7 +2484,7 @@ uint8_t code_na092Sequence[] = {
 // POWER-Code table
 struct IrCode code_na092Code  = {
   38462,     // carrier frequency
-  68,        // number of On-Time/Off-Time pairs in this Off-Code
+  68,        // number of On-Time/Off-Time pairs in this POWER-Code
   code_na092Pairs,
   code_na092Sequence
 };
@@ -2262,7 +2507,7 @@ uint8_t code_na093Sequence[] = {
 // POWER-Code table
 struct IrCode code_na093Code  = {
   38462,     // carrier frequency
-  68,        // number of On-Time/Off-Time pairs in this Off-Code
+  68,        // number of On-Time/Off-Time pairs in this POWER-Code
   code_na093Pairs,
   code_na093Sequence
 };
@@ -2285,7 +2530,7 @@ uint8_t code_na094Sequence[] = {
 // POWER-Code table
 struct IrCode code_na094Code  = {
   35714,     // carrier frequency
-  22,        // number of On-Time/Off-Time pairs in this Off-Code
+  22,        // number of On-Time/Off-Time pairs in this POWER-Code
   code_na094Pairs,
   code_na094Sequence
 };
@@ -2308,7 +2553,7 @@ uint8_t code_na095Sequence[] = {
 // POWER-Code table
 struct IrCode code_na095Code  = {
   38462,     // carrier frequency
-  40,        // number of On-Time/Off-Time pairs in this Off-Code
+  40,        // number of On-Time/Off-Time pairs in this POWER-Code
   code_na095Pairs,
   code_na095Sequence
 };
@@ -2332,7 +2577,7 @@ uint8_t code_na096Sequence[] = {
 // POWER-Code table
 struct IrCode code_na096Code  = {
   38462,     // carrier frequency
-  38,        // number of On-Time/Off-Time pairs in this Off-Code
+  38,        // number of On-Time/Off-Time pairs in this POWER-Code
   code_na096Pairs,
   code_na096Sequence
 };
@@ -2356,7 +2601,7 @@ uint8_t code_na097Sequence[] = {
 // POWER-Code table
 struct IrCode code_na097Code  = {
   38462,     // carrier frequency
-  38,        // number of On-Time/Off-Time pairs in this Off-Code
+  38,        // number of On-Time/Off-Time pairs in this POWER-Code
   code_na097Pairs,
   code_na097Sequence
 };
@@ -2381,7 +2626,7 @@ uint8_t code_na098Sequence[] = {
 // POWER-Code table
 struct IrCode code_na098Code  = {
   38462,     // carrier frequency
-  38,        // number of On-Time/Off-Time pairs in this Off-Code
+  38,        // number of On-Time/Off-Time pairs in this POWER-Code
   code_na098Pairs,
   code_na098Sequence
 };
@@ -2405,7 +2650,7 @@ uint8_t code_na099Sequence[] = {
 // POWER-Code table
 struct IrCode code_na099Code  = {
   38462,     // carrier frequency
-  38,        // number of On-Time/Off-Time pairs in this Off-Code
+  38,        // number of On-Time/Off-Time pairs in this POWER-Code
   code_na099Pairs,
   code_na099Sequence
 };
@@ -2427,7 +2672,7 @@ uint8_t code_na100Sequence[] = {
 // POWER-Code table
 struct IrCode code_na100Code  = {
   35842,     // carrier frequency
-  34,        // number of On-Time/Off-Time pairs in this Off-Code
+  34,        // number of On-Time/Off-Time pairs in this POWER-Code
   code_na100Pairs,
   code_na100Sequence
 };
@@ -2452,7 +2697,7 @@ uint8_t code_na101Sequence[] = {
 // POWER-Code table
 struct IrCode code_na101Code  = {
   38462,     // carrier frequency
-  38,        // number of On-Time/Off-Time pairs in this Off-Code
+  38,        // number of On-Time/Off-Time pairs in this POWER-Code
   code_na101Pairs,
   code_na101Sequence
 };
@@ -2475,7 +2720,7 @@ uint8_t code_na102Sequence[] = {
 // POWER-Code table
 struct IrCode code_na102Code  = {
   40000,     // carrier frequency
-  52,        // number of On-Time/Off-Time pairs in this Off-Code
+  52,        // number of On-Time/Off-Time pairs in this POWER-Code
   code_na102Pairs,
   code_na102Sequence
 };
@@ -2499,7 +2744,7 @@ uint8_t code_na103Sequence[] = {
 // POWER-Code table
 struct IrCode code_na103Code  = {
   38462,     // carrier frequency
-  40,        // number of On-Time/Off-Time pairs in this Off-Code
+  40,        // number of On-Time/Off-Time pairs in this POWER-Code
   code_na103Pairs,
   code_na103Sequence
 };
@@ -2523,7 +2768,7 @@ uint8_t code_na104Sequence[] = {
 // POWER-Code table
 struct IrCode code_na104Code  = {
   40000,     // carrier frequency
-  38,        // number of On-Time/Off-Time pairs in this Off-Code
+  38,        // number of On-Time/Off-Time pairs in this POWER-Code
   code_na104Pairs,
   code_na104Sequence
 };
@@ -2547,7 +2792,7 @@ uint8_t code_na105Sequence[] = {
 // POWER-Code table
 struct IrCode code_na105Code  = {
   40000,     // carrier frequency
-  38,        // number of On-Time/Off-Time pairs in this Off-Code
+  38,        // number of On-Time/Off-Time pairs in this POWER-Code
   code_na105Pairs,
   code_na105Sequence
 };
@@ -2571,7 +2816,7 @@ uint8_t code_na106Sequence[] = {
 // POWER-Code table
 struct IrCode code_na106Code  = {
   40000,     // carrier frequency
-  38,        // number of On-Time/Off-Time pairs in this Off-Code
+  38,        // number of On-Time/Off-Time pairs in this POWER-Code
   code_na106Pairs,
   code_na106Sequence
 };
@@ -2595,7 +2840,7 @@ uint8_t code_na107Sequence[] = {
 // POWER-Code table
 struct IrCode code_na107Code  = {
   38462,     // carrier frequency
-  40,        // number of On-Time/Off-Time pairs in this Off-Code
+  40,        // number of On-Time/Off-Time pairs in this POWER-Code
   code_na107Pairs,
   code_na107Sequence
 };
@@ -2619,7 +2864,7 @@ uint8_t code_na108Sequence[] = {
 // POWER-Code table
 struct IrCode code_na108Code  = {
   38462,     // carrier frequency
-  40,        // number of On-Time/Off-Time pairs in this Off-Code
+  40,        // number of On-Time/Off-Time pairs in this POWER-Code
   code_na108Pairs,
   code_na108Sequence
 };
@@ -2643,7 +2888,7 @@ uint8_t code_na109Sequence[] = {
 // POWER-Code table
 struct IrCode code_na109Code  = {
   40000,     // carrier frequency
-  38,        // number of On-Time/Off-Time pairs in this Off-Code
+  38,        // number of On-Time/Off-Time pairs in this POWER-Code
   code_na109Pairs,
   code_na109Sequence
 };
@@ -2667,7 +2912,7 @@ uint8_t code_na110Sequence[] = {
 // POWER-Code table
 struct IrCode code_na110Code  = {
   40161,     // carrier frequency
-  38,        // number of On-Time/Off-Time pairs in this Off-Code
+  38,        // number of On-Time/Off-Time pairs in this POWER-Code
   code_na110Pairs,
   code_na110Sequence
 };
@@ -2691,7 +2936,7 @@ uint8_t code_na111Sequence[] = {
 // POWER-Code table
 struct IrCode code_na111Code  = {
   40000,     // carrier frequency
-  38,        // number of On-Time/Off-Time pairs in this Off-Code
+  38,        // number of On-Time/Off-Time pairs in this POWER-Code
   code_na111Pairs,
   code_na111Sequence
 };
@@ -2716,7 +2961,7 @@ uint8_t code_na112Sequence[] = {
 // POWER-Code table
 struct IrCode code_na112Code  = {
   38462,     // carrier frequency
-  38,        // number of On-Time/Off-Time pairs in this Off-Code
+  38,        // number of On-Time/Off-Time pairs in this POWER-Code
   code_na112Pairs,
   code_na112Sequence
 };
@@ -2739,7 +2984,7 @@ uint8_t code_na113Sequence[] = {
 // POWER-Code table
 struct IrCode code_na113Code  = {
   40000,     // carrier frequency
-  68,        // number of On-Time/Off-Time pairs in this Off-Code
+  68,        // number of On-Time/Off-Time pairs in this POWER-Code
   code_na113Pairs,
   code_na113Sequence
 };
@@ -2763,7 +3008,7 @@ uint8_t code_na114Sequence[] = {
 // POWER-Code table
 struct IrCode code_na114Code  = {
   40000,     // carrier frequency
-  38,        // number of On-Time/Off-Time pairs in this Off-Code
+  38,        // number of On-Time/Off-Time pairs in this POWER-Code
   code_na114Pairs,
   code_na114Sequence
 };
@@ -2786,7 +3031,7 @@ uint8_t code_na115Sequence[] = {
 // POWER-Code table
 struct IrCode code_na115Code  = {
   40000,     // carrier frequency
-  52,        // number of On-Time/Off-Time pairs in this Off-Code
+  52,        // number of On-Time/Off-Time pairs in this POWER-Code
   code_na115Pairs,
   code_na115Sequence
 };
@@ -2810,7 +3055,7 @@ uint8_t code_na116Sequence[] = {
 // POWER-Code table
 struct IrCode code_na116Code  = {
   40000,     // carrier frequency
-  38,        // number of On-Time/Off-Time pairs in this Off-Code
+  38,        // number of On-Time/Off-Time pairs in this POWER-Code
   code_na116Pairs,
   code_na116Sequence
 };
@@ -2834,7 +3079,7 @@ uint8_t code_na117Sequence[] = {
 // POWER-Code table
 struct IrCode code_na117Code  = {
   41667,     // carrier frequency
-  38,        // number of On-Time/Off-Time pairs in this Off-Code
+  38,        // number of On-Time/Off-Time pairs in this POWER-Code
   code_na117Pairs,
   code_na117Sequence
 };
@@ -2858,13 +3103,14 @@ uint8_t code_na118Sequence[] = {
 // POWER-Code table
 struct IrCode code_na118Code  = {
   40000,     // carrier frequency
-  38,        // number of On-Time/Off-Time pairs in this Off-Code
+  38,        // number of On-Time/Off-Time pairs in this POWER-Code
   code_na118Pairs,
   code_na118Sequence
 };
 
 
-// code_na119
+/*
+// code_na119  --  duplicate of na020
 //
 // table of On-Time/Off-Time pairs
 uint32_t code_na119Pairs[] = {
@@ -2882,10 +3128,11 @@ uint8_t code_na119Sequence[] = {
 // POWER-Code table
 struct IrCode code_na119Code  = {
   55556,     // carrier frequency
-  38,        // number of On-Time/Off-Time pairs in this Off-Code
+  38,        // number of On-Time/Off-Time pairs in this POWER-Code
   code_na119Pairs,
   code_na119Sequence
 };
+*/
 
 
 // code_na120
@@ -2906,7 +3153,7 @@ uint8_t code_na120Sequence[] = {
 // POWER-Code table
 struct IrCode code_na120Code  = {
   40000,     // carrier frequency
-  38,        // number of On-Time/Off-Time pairs in this Off-Code
+  38,        // number of On-Time/Off-Time pairs in this POWER-Code
   code_na120Pairs,
   code_na120Sequence
 };
@@ -2930,7 +3177,7 @@ uint8_t code_na121Sequence[] = {
 // POWER-Code table
 struct IrCode code_na121Code  = {
   40000,     // carrier frequency
-  38,        // number of On-Time/Off-Time pairs in this Off-Code
+  38,        // number of On-Time/Off-Time pairs in this POWER-Code
   code_na121Pairs,
   code_na121Sequence
 };
@@ -2953,7 +3200,7 @@ uint8_t code_na122Sequence[] = {
 // POWER-Code table
 struct IrCode code_na122Code  = {
   52632,     // carrier frequency
-  48,        // number of On-Time/Off-Time pairs in this Off-Code
+  48,        // number of On-Time/Off-Time pairs in this POWER-Code
   code_na122Pairs,
   code_na122Sequence
 };
@@ -2977,7 +3224,7 @@ uint8_t code_na123Sequence[] = {
 // POWER-Code table
 struct IrCode code_na123Code  = {
   40000,     // carrier frequency
-  38,        // number of On-Time/Off-Time pairs in this Off-Code
+  38,        // number of On-Time/Off-Time pairs in this POWER-Code
   code_na123Pairs,
   code_na123Sequence
 };
@@ -3001,13 +3248,14 @@ uint8_t code_na124Sequence[] = {
 // POWER-Code table
 struct IrCode code_na124Code  = {
   40000,     // carrier frequency
-  38,        // number of On-Time/Off-Time pairs in this Off-Code
+  38,        // number of On-Time/Off-Time pairs in this POWER-Code
   code_na124Pairs,
   code_na124Sequence
 };
 
 
-// code_na125
+/*
+// code_na125  --  duplicate of na017
 //
 // table of On-Time/Off-Time pairs
 uint32_t code_na125Pairs[] = {
@@ -3025,10 +3273,11 @@ uint8_t code_na125Sequence[] = {
 // POWER-Code table
 struct IrCode code_na125Code  = {
   55556,     // carrier frequency
-  38,        // number of On-Time/Off-Time pairs in this Off-Code
+  38,        // number of On-Time/Off-Time pairs in this POWER-Code
   code_na125Pairs,
   code_na125Sequence
 };
+*/
 
 
 // code_na126
@@ -3049,7 +3298,7 @@ uint8_t code_na126Sequence[] = {
 // POWER-Code table
 struct IrCode code_na126Code  = {
   40000,     // carrier frequency
-  38,        // number of On-Time/Off-Time pairs in this Off-Code
+  38,        // number of On-Time/Off-Time pairs in this POWER-Code
   code_na126Pairs,
   code_na126Sequence
 };
@@ -3071,7 +3320,7 @@ uint8_t code_na127Sequence[] = {
 // POWER-Code table
 struct IrCode code_na127Code  = {
   25641,     // carrier frequency
-  8,         // number of On-Time/Off-Time pairs in this Off-Code
+  8,         // number of On-Time/Off-Time pairs in this POWER-Code
   code_na127Pairs,
   code_na127Sequence
 };
@@ -3094,7 +3343,7 @@ uint8_t code_na128Sequence[] = {
 // POWER-Code table
 struct IrCode code_na128Code  = {
   40000,     // carrier frequency
-  52,        // number of On-Time/Off-Time pairs in this Off-Code
+  52,        // number of On-Time/Off-Time pairs in this POWER-Code
   code_na128Pairs,
   code_na128Sequence
 };
@@ -3118,7 +3367,7 @@ uint8_t code_na129Sequence[] = {
 // POWER-Code table
 struct IrCode code_na129Code  = {
   40000,     // carrier frequency
-  38,        // number of On-Time/Off-Time pairs in this Off-Code
+  38,        // number of On-Time/Off-Time pairs in this POWER-Code
   code_na129Pairs,
   code_na129Sequence
 };
@@ -3141,7 +3390,7 @@ uint8_t code_na130Sequence[] = {
 // POWER-Code table
 struct IrCode code_na130Code  = {
   37037,     // carrier frequency
-  52,        // number of On-Time/Off-Time pairs in this Off-Code
+  52,        // number of On-Time/Off-Time pairs in this POWER-Code
   code_na130Pairs,
   code_na130Sequence
 };
@@ -3165,7 +3414,7 @@ uint8_t code_na131Sequence[] = {
 // POWER-Code table
 struct IrCode code_na131Code  = {
   40000,     // carrier frequency
-  38,        // number of On-Time/Off-Time pairs in this Off-Code
+  38,        // number of On-Time/Off-Time pairs in this POWER-Code
   code_na131Pairs,
   code_na131Sequence
 };
@@ -3187,7 +3436,7 @@ uint8_t code_na132Sequence[] = {
 // POWER-Code table
 struct IrCode code_na132Code  = {
   83333,     // carrier frequency
-  32,        // number of On-Time/Off-Time pairs in this Off-Code
+  32,        // number of On-Time/Off-Time pairs in this POWER-Code
   code_na132Pairs,
   code_na132Sequence
 };
@@ -3210,7 +3459,7 @@ uint8_t code_na133Sequence[] = {
 // POWER-Code table
 struct IrCode code_na133Code  = {
   41667,     // carrier frequency
-  24,        // number of On-Time/Off-Time pairs in this Off-Code
+  24,        // number of On-Time/Off-Time pairs in this POWER-Code
   code_na133Pairs,
   code_na133Sequence
 };
@@ -3233,7 +3482,7 @@ uint8_t code_na134Sequence[] = {
 // POWER-Code table
 struct IrCode code_na134Code  = {
   40000,     // carrier frequency
-  68,        // number of On-Time/Off-Time pairs in this Off-Code
+  68,        // number of On-Time/Off-Time pairs in this POWER-Code
   code_na134Pairs,
   code_na134Sequence
 };
@@ -3256,7 +3505,7 @@ uint8_t code_na135Sequence[] = {
 // POWER-Code table
 struct IrCode code_na135Code  = {
   38462,     // carrier frequency
-  88,        // number of On-Time/Off-Time pairs in this Off-Code
+  88,        // number of On-Time/Off-Time pairs in this POWER-Code
   code_na135Pairs,
   code_na135Sequence
 };
@@ -3280,7 +3529,7 @@ uint8_t code_na136Sequence[] = {
 // POWER-Code table
 struct IrCode code_na136Code  = {
   38610,     // carrier frequency
-  88,        // number of On-Time/Off-Time pairs in this Off-Code
+  88,        // number of On-Time/Off-Time pairs in this POWER-Code
   code_na136Pairs,
   code_na136Sequence
 };
@@ -3305,7 +3554,7 @@ uint8_t code_eu000Sequence[] = {
 // POWER-Code table
 struct IrCode code_eu000Code  = {
   35714,     // carrier frequency
-  40,        // number of On-Time/Off-Time pairs in this Off-Code
+  40,        // number of On-Time/Off-Time pairs in this POWER-Code
   code_eu000Pairs,
   code_eu000Sequence
 };
@@ -3330,13 +3579,14 @@ uint8_t code_eu001Sequence[] = {
 // POWER-Code table
 struct IrCode code_eu001Code  = {
   30303,     // carrier frequency
-  31,        // number of On-Time/Off-Time pairs in this Off-Code
+  31,        // number of On-Time/Off-Time pairs in this POWER-Code
   code_eu001Pairs,
   code_eu001Sequence
 };
 
 
-// code_eu002
+/*
+// code_eu002  --  duplicate of eu012
 //
 // table of On-Time/Off-Time pairs
 uint32_t code_eu002Pairs[] = {
@@ -3352,13 +3602,14 @@ uint8_t code_eu002Sequence[] = {
 // POWER-Code table
 struct IrCode code_eu002Code  = {
   33333,     // carrier frequency
-  26,        // number of On-Time/Off-Time pairs in this Off-Code
+  26,        // number of On-Time/Off-Time pairs in this POWER-Code
   code_eu002Pairs,
   code_eu002Sequence
-};
+};*/
 
 
-// code_eu003
+/*
+// code_eu003  --  duplicate of ???
 //
 // table of On-Time/Off-Time pairs
 uint32_t code_eu003Pairs[] = {
@@ -3375,13 +3626,15 @@ uint8_t code_eu003Sequence[] = {
 // POWER-Code table
 struct IrCode code_eu003Code  = {
   38462,     // carrier frequency
-  26,        // number of On-Time/Off-Time pairs in this Off-Code
+  26,        // number of On-Time/Off-Time pairs in this POWER-Code
   code_eu003Pairs,
   code_eu003Sequence
 };
+*/
 
 
-// code_eu004
+/*
+// code_eu004  --  duplicate of na002
 //
 // table of On-Time/Off-Time pairs
 uint32_t code_eu004Pairs[] = {
@@ -3398,13 +3651,15 @@ uint8_t code_eu004Sequence[] = {
 // POWER-Code table
 struct IrCode code_eu004Code  = {
   37037,     // carrier frequency
-  100,       // number of On-Time/Off-Time pairs in this Off-Code
+  100,       // number of On-Time/Off-Time pairs in this POWER-Code
   code_eu004Pairs,
   code_eu004Sequence
 };
+*/
 
 
-// code_eu005
+/*
+// code_eu005  --  duplicate of na003
 //
 // table of On-Time/Off-Time pairs
 uint32_t code_eu005Pairs[] = {
@@ -3421,13 +3676,14 @@ uint8_t code_eu005Sequence[] = {
 // POWER-Code table
 struct IrCode code_eu005Code  = {
   38610,     // carrier frequency
-  64,        // number of On-Time/Off-Time pairs in this Off-Code
+  64,        // number of On-Time/Off-Time pairs in this POWER-Code
   code_eu005Pairs,
   code_eu005Sequence
-};
+};*/
 
 
-// code_eu006
+/*
+// code_eu006  --  duplicate of na006
 //
 // table of On-Time/Off-Time pairs
 uint32_t code_eu006Pairs[] = {
@@ -3444,13 +3700,15 @@ uint8_t code_eu006Sequence[] = {
 // POWER-Code table
 struct IrCode code_eu006Code  = {
   38462,     // carrier frequency
-  68,        // number of On-Time/Off-Time pairs in this Off-Code
+  68,        // number of On-Time/Off-Time pairs in this POWER-Code
   code_eu006Pairs,
   code_eu006Sequence
 };
+*/
 
 
-// code_eu007
+/*
+// code_eu007  --  duplicate of na010
 //
 // table of On-Time/Off-Time pairs
 uint32_t code_eu007Pairs[] = {
@@ -3466,13 +3724,15 @@ uint8_t code_eu007Sequence[] = {
 // POWER-Code table
 struct IrCode code_eu007Code  = {
   38462,     // carrier frequency
-  52,        // number of On-Time/Off-Time pairs in this Off-Code
+  52,        // number of On-Time/Off-Time pairs in this POWER-Code
   code_eu007Pairs,
   code_eu007Sequence
 };
+*/
 
 
-// code_eu008
+/*
+// code_eu008  --  duplicate of na011
 //
 // table of On-Time/Off-Time pairs
 uint32_t code_eu008Pairs[] = {
@@ -3491,13 +3751,15 @@ uint8_t code_eu008Sequence[] = {
 // POWER-Code table
 struct IrCode code_eu008Code  = {
   38462,     // carrier frequency
-  38,        // number of On-Time/Off-Time pairs in this Off-Code
+  38,        // number of On-Time/Off-Time pairs in this POWER-Code
   code_eu008Pairs,
   code_eu008Sequence
 };
+*/
 
 
-// code_eu009
+/*
+// code_eu009  --  duplicate of ???
 //
 // table of On-Time/Off-Time pairs
 uint32_t code_eu009Pairs[] = {
@@ -3514,13 +3776,15 @@ uint8_t code_eu009Sequence[] = {
 // POWER-Code table
 struct IrCode code_eu009Code  = {
   35714,     // carrier frequency
-  24,        // number of On-Time/Off-Time pairs in this Off-Code
+  24,        // number of On-Time/Off-Time pairs in this POWER-Code
   code_eu009Pairs,
   code_eu009Sequence
 };
+*/
 
 
-// code_eu010
+/*
+// code_eu010  --  duplicate of ???
 //
 // table of On-Time/Off-Time pairs
 uint32_t code_eu010Pairs[] = {
@@ -3539,10 +3803,11 @@ uint8_t code_eu010Sequence[] = {
 // POWER-Code table
 struct IrCode code_eu010Code  = {
   38462,     // carrier frequency
-  38,        // number of On-Time/Off-Time pairs in this Off-Code
+  38,        // number of On-Time/Off-Time pairs in this POWER-Code
   code_eu010Pairs,
   code_eu010Sequence
 };
+*/
 
 
 // code_eu011
@@ -3563,7 +3828,7 @@ uint8_t code_eu011Sequence[] = {
 // POWER-Code table
 struct IrCode code_eu011Code  = {
   38462,     // carrier frequency
-  38,        // number of On-Time/Off-Time pairs in this Off-Code
+  38,        // number of On-Time/Off-Time pairs in this POWER-Code
   code_eu011Pairs,
   code_eu011Sequence
 };
@@ -3584,13 +3849,14 @@ uint8_t code_eu012Sequence[] = {
 // POWER-Code table
 struct IrCode code_eu012Code  = {
   33445,     // carrier frequency
-  26,        // number of On-Time/Off-Time pairs in this Off-Code
+  26,        // number of On-Time/Off-Time pairs in this POWER-Code
   code_eu012Pairs,
   code_eu012Sequence
 };
 
 
-// code_eu013
+/*
+// code_eu013  --  duplicate of na136
 //
 // table of On-Time/Off-Time pairs
 uint32_t code_eu013Pairs[] = {
@@ -3606,13 +3872,15 @@ uint8_t code_eu013Sequence[] = {
 // POWER-Code table
 struct IrCode code_eu013Code  = {
   38462,     // carrier frequency
-  88,        // number of On-Time/Off-Time pairs in this Off-Code
+  88,        // number of On-Time/Off-Time pairs in this POWER-Code
   code_eu013Pairs,
   code_eu013Sequence
 };
+*/
 
 
-// code_eu014
+/*
+// code_eu014  --  duplicate of ???
 //
 // table of On-Time/Off-Time pairs
 uint32_t code_eu014Pairs[] = {
@@ -3629,13 +3897,14 @@ uint8_t code_eu014Sequence[] = {
 // POWER-Code table
 struct IrCode code_eu014Code  = {
   38462,     // carrier frequency
-  38,        // number of On-Time/Off-Time pairs in this Off-Code
+  38,        // number of On-Time/Off-Time pairs in this POWER-Code
   code_eu014Pairs,
   code_eu014Sequence
-};
+};*/
 
 
-// code_eu015
+/*
+// code_eu015  --  duplicate of na018
 //
 // table of On-Time/Off-Time pairs
 uint32_t code_eu015Pairs[] = {
@@ -3652,10 +3921,11 @@ uint8_t code_eu015Sequence[] = {
 // POWER-Code table
 struct IrCode code_eu015Code  = {
   38462,     // carrier frequency
-  136,       // number of On-Time/Off-Time pairs in this Off-Code
+  136,       // number of On-Time/Off-Time pairs in this POWER-Code
   code_eu015Pairs,
   code_eu015Sequence
 };
+*/
 
 
 // code_eu016
@@ -3674,7 +3944,7 @@ uint8_t code_eu016Sequence[] = {
 // POWER-Code table
 struct IrCode code_eu016Code  = {
   33333,     // carrier frequency
-  34,        // number of On-Time/Off-Time pairs in this Off-Code
+  34,        // number of On-Time/Off-Time pairs in this POWER-Code
   code_eu016Pairs,
   code_eu016Sequence
 };
@@ -3696,13 +3966,14 @@ uint8_t code_eu017Sequence[] = {
 // POWER-Code table
 struct IrCode code_eu017Code  = {
   33333,     // carrier frequency
-  24,        // number of On-Time/Off-Time pairs in this Off-Code
+  24,        // number of On-Time/Off-Time pairs in this POWER-Code
   code_eu017Pairs,
   code_eu017Sequence
 };
 
 
-// code_eu018
+/*
+// code_eu018  --  duplicate of na123
 //
 // table of On-Time/Off-Time pairs
 uint32_t code_eu018Pairs[] = {
@@ -3721,10 +3992,11 @@ uint8_t code_eu018Sequence[] = {
 // POWER-Code table
 struct IrCode code_eu018Code  = {
   38462,     // carrier frequency
-  38,        // number of On-Time/Off-Time pairs in this Off-Code
+  38,        // number of On-Time/Off-Time pairs in this POWER-Code
   code_eu018Pairs,
   code_eu018Sequence
 };
+*/
 
 
 // code_eu019
@@ -3744,7 +4016,7 @@ uint8_t code_eu019Sequence[] = {
 // POWER-Code table
 struct IrCode code_eu019Code  = {
   38462,     // carrier frequency
-  38,        // number of On-Time/Off-Time pairs in this Off-Code
+  38,        // number of On-Time/Off-Time pairs in this POWER-Code
   code_eu019Pairs,
   code_eu019Sequence
 };
@@ -3766,7 +4038,7 @@ uint8_t code_eu020Sequence[] = {
 // POWER-Code table
 struct IrCode code_eu020Code  = {
   35714,     // carrier frequency
-  34,        // number of On-Time/Off-Time pairs in this Off-Code
+  34,        // number of On-Time/Off-Time pairs in this POWER-Code
   code_eu020Pairs,
   code_eu020Sequence
 };
@@ -3790,7 +4062,7 @@ uint8_t code_eu021Sequence[] = {
 // POWER-Code table
 struct IrCode code_eu021Code  = {
   38462,     // carrier frequency
-  38,        // number of On-Time/Off-Time pairs in this Off-Code
+  38,        // number of On-Time/Off-Time pairs in this POWER-Code
   code_eu021Pairs,
   code_eu021Sequence
 };
@@ -3815,13 +4087,14 @@ uint8_t code_eu022Sequence[] = {
 // POWER-Code table
 struct IrCode code_eu022Code  = {
   38462,     // carrier frequency
-  38,        // number of On-Time/Off-Time pairs in this Off-Code
+  38,        // number of On-Time/Off-Time pairs in this POWER-Code
   code_eu022Pairs,
   code_eu022Sequence
 };
 
 
-// code_eu023
+/*
+// code_eu023  --  duplicate of ???
 //
 // table of On-Time/Off-Time pairs
 uint32_t code_eu023Pairs[] = {
@@ -3839,10 +4112,11 @@ uint8_t code_eu023Sequence[] = {
 // POWER-Code table
 struct IrCode code_eu023Code  = {
   38462,     // carrier frequency
-  38,        // number of On-Time/Off-Time pairs in this Off-Code
+  38,        // number of On-Time/Off-Time pairs in this POWER-Code
   code_eu023Pairs,
   code_eu023Sequence
 };
+*/
 
 
 // code_eu024
@@ -3864,7 +4138,7 @@ uint8_t code_eu024Sequence[] = {
 // POWER-Code table
 struct IrCode code_eu024Code  = {
   38462,     // carrier frequency
-  38,        // number of On-Time/Off-Time pairs in this Off-Code
+  38,        // number of On-Time/Off-Time pairs in this POWER-Code
   code_eu024Pairs,
   code_eu024Sequence
 };
@@ -3890,7 +4164,7 @@ uint8_t code_eu025Sequence[] = {
 // POWER-Code table
 struct IrCode code_eu025Code  = {
   31250,     // carrier frequency
-  21,        // number of On-Time/Off-Time pairs in this Off-Code
+  21,        // number of On-Time/Off-Time pairs in this POWER-Code
   code_eu025Pairs,
   code_eu025Sequence
 };
@@ -3911,7 +4185,7 @@ uint8_t code_eu026Sequence[] = {
 // POWER-Code table
 struct IrCode code_eu026Code  = {
   38462,     // carrier frequency
-  24,        // number of On-Time/Off-Time pairs in this Off-Code
+  24,        // number of On-Time/Off-Time pairs in this POWER-Code
   code_eu026Pairs,
   code_eu026Sequence
 };
@@ -3936,7 +4210,7 @@ uint8_t code_eu027Sequence[] = {
 // POWER-Code table
 struct IrCode code_eu027Code  = {
   38462,     // carrier frequency
-  38,        // number of On-Time/Off-Time pairs in this Off-Code
+  38,        // number of On-Time/Off-Time pairs in this POWER-Code
   code_eu027Pairs,
   code_eu027Sequence
 };
@@ -3961,7 +4235,7 @@ uint8_t code_eu028Sequence[] = {
 // POWER-Code table
 struct IrCode code_eu028Code  = {
   30303,     // carrier frequency
-  31,        // number of On-Time/Off-Time pairs in this Off-Code
+  31,        // number of On-Time/Off-Time pairs in this POWER-Code
   code_eu028Pairs,
   code_eu028Sequence
 };
@@ -3987,13 +4261,14 @@ uint8_t code_eu029Sequence[] = {
 // POWER-Code table
 struct IrCode code_eu029Code  = {
   34483,     // carrier frequency
-  46,        // number of On-Time/Off-Time pairs in this Off-Code
+  46,        // number of On-Time/Off-Time pairs in this POWER-Code
   code_eu029Pairs,
   code_eu029Sequence
 };
 
 
-// code_eu030
+/*
+// code_eu030  -- duplicate of na020
 //
 // table of On-Time/Off-Time pairs
 uint32_t code_eu030Pairs[] = {
@@ -4012,10 +4287,11 @@ uint8_t code_eu030Sequence[] = {
 // POWER-Code table
 struct IrCode code_eu030Code  = {
   38462,     // carrier frequency
-  38,        // number of On-Time/Off-Time pairs in this Off-Code
+  38,        // number of On-Time/Off-Time pairs in this POWER-Code
   code_eu030Pairs,
   code_eu030Sequence
 };
+*/
 
 
 // code_eu031
@@ -4034,7 +4310,7 @@ uint8_t code_eu031Sequence[] = {
 // POWER-Code table
 struct IrCode code_eu031Code  = {
   38462,     // carrier frequency
-  52,        // number of On-Time/Off-Time pairs in this Off-Code
+  52,        // number of On-Time/Off-Time pairs in this POWER-Code
   code_eu031Pairs,
   code_eu031Sequence
 };
@@ -4056,7 +4332,7 @@ uint8_t code_eu032Sequence[] = {
 // POWER-Code table
 struct IrCode code_eu032Code  = {
   33333,     // carrier frequency
-  26,        // number of On-Time/Off-Time pairs in this Off-Code
+  26,        // number of On-Time/Off-Time pairs in this POWER-Code
   code_eu032Pairs,
   code_eu032Sequence
 };
@@ -4078,7 +4354,7 @@ uint8_t code_eu033Sequence[] = {
 // POWER-Code table
 struct IrCode code_eu033Code  = {
   38462,     // carrier frequency
-  14,        // number of On-Time/Off-Time pairs in this Off-Code
+  14,        // number of On-Time/Off-Time pairs in this POWER-Code
   code_eu033Pairs,
   code_eu033Sequence
 };
@@ -4103,13 +4379,14 @@ uint8_t code_eu034Sequence[] = {
 // POWER-Code table
 struct IrCode code_eu034Code  = {
   38462,     // carrier frequency
-  38,        // number of On-Time/Off-Time pairs in this Off-Code
+  38,        // number of On-Time/Off-Time pairs in this POWER-Code
   code_eu034Pairs,
   code_eu034Sequence
 };
 
 
-// code_eu035
+/*
+// code_eu035  --  duplicate of eu009
 //
 // table of On-Time/Off-Time pairs
 uint32_t code_eu035Pairs[] = {
@@ -4126,13 +4403,15 @@ uint8_t code_eu035Sequence[] = {
 // POWER-Code table
 struct IrCode code_eu035Code  = {
   35714,     // carrier frequency
-  24,        // number of On-Time/Off-Time pairs in this Off-Code
+  24,        // number of On-Time/Off-Time pairs in this POWER-Code
   code_eu035Pairs,
   code_eu035Sequence
 };
+*/
 
 
-// code_eu036
+/*
+// code_eu036  --  duplicate of na104
 //
 // table of On-Time/Off-Time pairs
 uint32_t code_eu036Pairs[] = {
@@ -4151,10 +4430,11 @@ uint8_t code_eu036Sequence[] = {
 // POWER-Code table
 struct IrCode code_eu036Code  = {
   38462,     // carrier frequency
-  38,        // number of On-Time/Off-Time pairs in this Off-Code
+  38,        // number of On-Time/Off-Time pairs in this POWER-Code
   code_eu036Pairs,
   code_eu036Sequence
 };
+*/
 
 
 // code_eu037
@@ -4172,7 +4452,7 @@ uint8_t code_eu037Sequence[] = {
 // POWER-Code table
 struct IrCode code_eu037Code  = {
   38462,     // carrier frequency
-  24,        // number of On-Time/Off-Time pairs in this Off-Code
+  24,        // number of On-Time/Off-Time pairs in this POWER-Code
   code_eu037Pairs,
   code_eu037Sequence
 };
@@ -4193,7 +4473,7 @@ uint8_t code_eu038Sequence[] = {
 // POWER-Code table
 struct IrCode code_eu038Code  = {
   0,         // carrier frequency
-  11,        // number of On-Time/Off-Time pairs in this Off-Code
+  11,        // number of On-Time/Off-Time pairs in this POWER-Code
   code_eu038Pairs,
   code_eu038Sequence
 };
@@ -4215,7 +4495,7 @@ uint8_t code_eu039Sequence[] = {
 // POWER-Code table
 struct IrCode code_eu039Code  = {
   40161,     // carrier frequency
-  24,        // number of On-Time/Off-Time pairs in this Off-Code
+  24,        // number of On-Time/Off-Time pairs in this POWER-Code
   code_eu039Pairs,
   code_eu039Sequence
 };
@@ -4238,7 +4518,7 @@ uint8_t code_eu040Sequence[] = {
 // POWER-Code table
 struct IrCode code_eu040Code  = {
   35714,     // carrier frequency
-  52,        // number of On-Time/Off-Time pairs in this Off-Code
+  52,        // number of On-Time/Off-Time pairs in this POWER-Code
   code_eu040Pairs,
   code_eu040Sequence
 };
@@ -4261,7 +4541,7 @@ uint8_t code_eu041Sequence[] = {
 // POWER-Code table
 struct IrCode code_eu041Code  = {
   33333,     // carrier frequency
-  28,        // number of On-Time/Off-Time pairs in this Off-Code
+  28,        // number of On-Time/Off-Time pairs in this POWER-Code
   code_eu041Pairs,
   code_eu041Sequence
 };
@@ -4285,7 +4565,7 @@ uint8_t code_eu042Sequence[] = {
 // POWER-Code table
 struct IrCode code_eu042Code  = {
   38462,     // carrier frequency
-  38,        // number of On-Time/Off-Time pairs in this Off-Code
+  38,        // number of On-Time/Off-Time pairs in this POWER-Code
   code_eu042Pairs,
   code_eu042Sequence
 };
@@ -4305,7 +4585,7 @@ uint8_t code_eu043Sequence[] = {
 // POWER-Code table
 struct IrCode code_eu043Code  = {
   41667,     // carrier frequency
-  2,         // number of On-Time/Off-Time pairs in this Off-Code
+  2,         // number of On-Time/Off-Time pairs in this POWER-Code
   code_eu043Pairs,
   code_eu043Sequence
 };
@@ -4330,7 +4610,7 @@ uint8_t code_eu044Sequence[] = {
 // POWER-Code table
 struct IrCode code_eu044Code  = {
   38462,     // carrier frequency
-  38,        // number of On-Time/Off-Time pairs in this Off-Code
+  38,        // number of On-Time/Off-Time pairs in this POWER-Code
   code_eu044Pairs,
   code_eu044Sequence
 };
@@ -4352,7 +4632,7 @@ uint8_t code_eu045Sequence[] = {
 // POWER-Code table
 struct IrCode code_eu045Code  = {
   41667,     // carrier frequency
-  10,        // number of On-Time/Off-Time pairs in this Off-Code
+  10,        // number of On-Time/Off-Time pairs in this POWER-Code
   code_eu045Pairs,
   code_eu045Sequence
 };
@@ -4374,7 +4654,7 @@ uint8_t code_eu046Sequence[] = {
 // POWER-Code table
 struct IrCode code_eu046Code  = {
   34602,     // carrier frequency
-  16,        // number of On-Time/Off-Time pairs in this Off-Code
+  16,        // number of On-Time/Off-Time pairs in this POWER-Code
   code_eu046Pairs,
   code_eu046Sequence
 };
@@ -4395,7 +4675,7 @@ uint8_t code_eu047Sequence[] = {
 // POWER-Code table
 struct IrCode code_eu047Code  = {
   0,         // carrier frequency
-  17,        // number of On-Time/Off-Time pairs in this Off-Code
+  17,        // number of On-Time/Off-Time pairs in this POWER-Code
   code_eu047Pairs,
   code_eu047Sequence
 };
@@ -4419,7 +4699,7 @@ uint8_t code_eu048Sequence[] = {
 // POWER-Code table
 struct IrCode code_eu048Code  = {
   38462,     // carrier frequency
-  38,        // number of On-Time/Off-Time pairs in this Off-Code
+  38,        // number of On-Time/Off-Time pairs in this POWER-Code
   code_eu048Pairs,
   code_eu048Sequence
 };
@@ -4443,7 +4723,7 @@ uint8_t code_eu049Sequence[] = {
 // POWER-Code table
 struct IrCode code_eu049Code  = {
   38462,     // carrier frequency
-  40,        // number of On-Time/Off-Time pairs in this Off-Code
+  40,        // number of On-Time/Off-Time pairs in this POWER-Code
   code_eu049Pairs,
   code_eu049Sequence
 };
@@ -4466,7 +4746,7 @@ uint8_t code_eu050Sequence[] = {
 // POWER-Code table
 struct IrCode code_eu050Code  = {
   33333,     // carrier frequency
-  48,        // number of On-Time/Off-Time pairs in this Off-Code
+  48,        // number of On-Time/Off-Time pairs in this POWER-Code
   code_eu050Pairs,
   code_eu050Sequence
 };
@@ -4489,7 +4769,7 @@ uint8_t code_eu051Sequence[] = {
 // POWER-Code table
 struct IrCode code_eu051Code  = {
   38462,     // carrier frequency
-  52,        // number of On-Time/Off-Time pairs in this Off-Code
+  52,        // number of On-Time/Off-Time pairs in this POWER-Code
   code_eu051Pairs,
   code_eu051Sequence
 };
@@ -4511,7 +4791,7 @@ uint8_t code_eu052Sequence[] = {
 // POWER-Code table
 struct IrCode code_eu052Code  = {
   31250,     // carrier frequency
-  24,        // number of On-Time/Off-Time pairs in this Off-Code
+  24,        // number of On-Time/Off-Time pairs in this POWER-Code
   code_eu052Pairs,
   code_eu052Sequence
 };
@@ -4533,7 +4813,7 @@ uint8_t code_eu053Sequence[] = {
 // POWER-Code table
 struct IrCode code_eu053Code  = {
   34483,     // carrier frequency
-  16,        // number of On-Time/Off-Time pairs in this Off-Code
+  16,        // number of On-Time/Off-Time pairs in this POWER-Code
   code_eu053Pairs,
   code_eu053Sequence
 };
@@ -4557,7 +4837,7 @@ uint8_t code_eu054Sequence[] = {
 // POWER-Code table
 struct IrCode code_eu054Code  = {
   31250,     // carrier frequency
-  14,        // number of On-Time/Off-Time pairs in this Off-Code
+  14,        // number of On-Time/Off-Time pairs in this POWER-Code
   code_eu054Pairs,
   code_eu054Sequence
 };
@@ -4581,7 +4861,7 @@ uint8_t code_eu055Sequence[] = {
 // POWER-Code table
 struct IrCode code_eu055Code  = {
   38462,     // carrier frequency
-  38,        // number of On-Time/Off-Time pairs in this Off-Code
+  38,        // number of On-Time/Off-Time pairs in this POWER-Code
   code_eu055Pairs,
   code_eu055Sequence
 };
@@ -4602,13 +4882,14 @@ uint8_t code_eu056Sequence[] = {
 // POWER-Code table
 struct IrCode code_eu056Code  = {
   38462,     // carrier frequency
-  4,         // number of On-Time/Off-Time pairs in this Off-Code
+  4,         // number of On-Time/Off-Time pairs in this POWER-Code
   code_eu056Pairs,
   code_eu056Sequence
 };
 
 
-// code_eu057
+/*
+// code_eu057  --  duplicate of na011
 //
 // table of On-Time/Off-Time pairs
 uint32_t code_eu057Pairs[] = {
@@ -4627,10 +4908,11 @@ uint8_t code_eu057Sequence[] = {
 // POWER-Code table
 struct IrCode code_eu057Code  = {
   38462,     // carrier frequency
-  38,        // number of On-Time/Off-Time pairs in this Off-Code
+  38,        // number of On-Time/Off-Time pairs in this POWER-Code
   code_eu057Pairs,
   code_eu057Sequence
 };
+*/
 
 
 // code_eu058
@@ -4651,7 +4933,7 @@ uint8_t code_eu058Sequence[] = {
 // POWER-Code table
 struct IrCode code_eu058Code  = {
   38462,     // carrier frequency
-  38,        // number of On-Time/Off-Time pairs in this Off-Code
+  38,        // number of On-Time/Off-Time pairs in this POWER-Code
   code_eu058Pairs,
   code_eu058Sequence
 };
@@ -4672,7 +4954,7 @@ uint8_t code_eu059Sequence[] = {
 // POWER-Code table
 struct IrCode code_eu059Code  = {
   41667,     // carrier frequency
-  4,         // number of On-Time/Off-Time pairs in this Off-Code
+  4,         // number of On-Time/Off-Time pairs in this POWER-Code
   code_eu059Pairs,
   code_eu059Sequence
 };
@@ -4694,7 +4976,7 @@ uint8_t code_eu060Sequence[] = {
 // POWER-Code table
 struct IrCode code_eu060Code  = {
   38462,     // carrier frequency
-  34,        // number of On-Time/Off-Time pairs in this Off-Code
+  34,        // number of On-Time/Off-Time pairs in this POWER-Code
   code_eu060Pairs,
   code_eu060Sequence
 };
@@ -4717,7 +4999,7 @@ uint8_t code_eu061Sequence[] = {
 // POWER-Code table
 struct IrCode code_eu061Code  = {
   35714,     // carrier frequency
-  24,        // number of On-Time/Off-Time pairs in this Off-Code
+  24,        // number of On-Time/Off-Time pairs in this POWER-Code
   code_eu061Pairs,
   code_eu061Sequence
 };
@@ -4739,7 +5021,7 @@ uint8_t code_eu062Sequence[] = {
 // POWER-Code table
 struct IrCode code_eu062Code  = {
   38462,     // carrier frequency
-  34,        // number of On-Time/Off-Time pairs in this Off-Code
+  34,        // number of On-Time/Off-Time pairs in this POWER-Code
   code_eu062Pairs,
   code_eu062Sequence
 };
@@ -4763,7 +5045,7 @@ uint8_t code_eu063Sequence[] = {
 // POWER-Code table
 struct IrCode code_eu063Code  = {
   38462,     // carrier frequency
-  38,        // number of On-Time/Off-Time pairs in this Off-Code
+  38,        // number of On-Time/Off-Time pairs in this POWER-Code
   code_eu063Pairs,
   code_eu063Sequence
 };
@@ -4789,7 +5071,7 @@ uint8_t code_eu064Sequence[] = {
 // POWER-Code table
 struct IrCode code_eu064Code  = {
   30395,     // carrier frequency
-  29,        // number of On-Time/Off-Time pairs in this Off-Code
+  29,        // number of On-Time/Off-Time pairs in this POWER-Code
   code_eu064Pairs,
   code_eu064Sequence
 };
@@ -4814,7 +5096,7 @@ uint8_t code_eu065Sequence[] = {
 // POWER-Code table
 struct IrCode code_eu065Code  = {
   30303,     // carrier frequency
-  31,        // number of On-Time/Off-Time pairs in this Off-Code
+  31,        // number of On-Time/Off-Time pairs in this POWER-Code
   code_eu065Pairs,
   code_eu065Sequence
 };
@@ -4838,7 +5120,7 @@ uint8_t code_eu066Sequence[] = {
 // POWER-Code table
 struct IrCode code_eu066Code  = {
   38462,     // carrier frequency
-  40,        // number of On-Time/Off-Time pairs in this Off-Code
+  40,        // number of On-Time/Off-Time pairs in this POWER-Code
   code_eu066Pairs,
   code_eu066Sequence
 };
@@ -4859,7 +5141,7 @@ uint8_t code_eu067Sequence[] = {
 // POWER-Code table
 struct IrCode code_eu067Code  = {
   38462,     // carrier frequency
-  12,        // number of On-Time/Off-Time pairs in this Off-Code
+  12,        // number of On-Time/Off-Time pairs in this POWER-Code
   code_eu067Pairs,
   code_eu067Sequence
 };
@@ -4884,7 +5166,7 @@ uint8_t code_eu068Sequence[] = {
 // POWER-Code table
 struct IrCode code_eu068Code  = {
   38610,     // carrier frequency
-  31,        // number of On-Time/Off-Time pairs in this Off-Code
+  31,        // number of On-Time/Off-Time pairs in this POWER-Code
   code_eu068Pairs,
   code_eu068Sequence
 };
@@ -4905,7 +5187,7 @@ uint8_t code_eu069Sequence[] = {
 // POWER-Code table
 struct IrCode code_eu069Code  = {
   0,         // carrier frequency
-  23,        // number of On-Time/Off-Time pairs in this Off-Code
+  23,        // number of On-Time/Off-Time pairs in this POWER-Code
   code_eu069Pairs,
   code_eu069Sequence
 };
@@ -4926,7 +5208,7 @@ uint8_t code_eu070Sequence[] = {
 // POWER-Code table
 struct IrCode code_eu070Code  = {
   0,         // carrier frequency
-  23,        // number of On-Time/Off-Time pairs in this Off-Code
+  23,        // number of On-Time/Off-Time pairs in this POWER-Code
   code_eu070Pairs,
   code_eu070Sequence
 };
@@ -4947,7 +5229,7 @@ uint8_t code_eu071Sequence[] = {
 // POWER-Code table
 struct IrCode code_eu071Code  = {
   38462,     // carrier frequency
-  24,        // number of On-Time/Off-Time pairs in this Off-Code
+  24,        // number of On-Time/Off-Time pairs in this POWER-Code
   code_eu071Pairs,
   code_eu071Sequence
 };
@@ -4968,7 +5250,7 @@ uint8_t code_eu072Sequence[] = {
 // POWER-Code table
 struct IrCode code_eu072Code  = {
   0,         // carrier frequency
-  23,        // number of On-Time/Off-Time pairs in this Off-Code
+  23,        // number of On-Time/Off-Time pairs in this POWER-Code
   code_eu072Pairs,
   code_eu072Sequence
 };
@@ -4990,7 +5272,7 @@ uint8_t code_eu073Sequence[] = {
 // POWER-Code table
 struct IrCode code_eu073Code  = {
   34483,     // carrier frequency
-  16,        // number of On-Time/Off-Time pairs in this Off-Code
+  16,        // number of On-Time/Off-Time pairs in this POWER-Code
   code_eu073Pairs,
   code_eu073Sequence
 };
@@ -5013,7 +5295,7 @@ uint8_t code_eu074Sequence[] = {
 // POWER-Code table
 struct IrCode code_eu074Code  = {
   35714,     // carrier frequency
-  26,        // number of On-Time/Off-Time pairs in this Off-Code
+  26,        // number of On-Time/Off-Time pairs in this POWER-Code
   code_eu074Pairs,
   code_eu074Sequence
 };
@@ -5034,7 +5316,7 @@ uint8_t code_eu075Sequence[] = {
 // POWER-Code table
 struct IrCode code_eu075Code  = {
   0,         // carrier frequency
-  23,        // number of On-Time/Off-Time pairs in this Off-Code
+  23,        // number of On-Time/Off-Time pairs in this POWER-Code
   code_eu075Pairs,
   code_eu075Sequence
 };
@@ -5056,7 +5338,7 @@ uint8_t code_eu076Sequence[] = {
 // POWER-Code table
 struct IrCode code_eu076Code  = {
   38462,     // carrier frequency
-  24,        // number of On-Time/Off-Time pairs in this Off-Code
+  24,        // number of On-Time/Off-Time pairs in this POWER-Code
   code_eu076Pairs,
   code_eu076Sequence
 };
@@ -5081,7 +5363,7 @@ uint8_t code_eu077Sequence[] = {
 // POWER-Code table
 struct IrCode code_eu077Code  = {
   30303,     // carrier frequency
-  31,        // number of On-Time/Off-Time pairs in this Off-Code
+  31,        // number of On-Time/Off-Time pairs in this POWER-Code
   code_eu077Pairs,
   code_eu077Sequence
 };
@@ -5103,7 +5385,7 @@ uint8_t code_eu078Sequence[] = {
 // POWER-Code table
 struct IrCode code_eu078Code  = {
   0,         // carrier frequency
-  12,        // number of On-Time/Off-Time pairs in this Off-Code
+  12,        // number of On-Time/Off-Time pairs in this POWER-Code
   code_eu078Pairs,
   code_eu078Sequence
 };
@@ -5126,7 +5408,7 @@ uint8_t code_eu079Sequence[] = {
 // POWER-Code table
 struct IrCode code_eu079Code  = {
   38462,     // carrier frequency
-  68,        // number of On-Time/Off-Time pairs in this Off-Code
+  68,        // number of On-Time/Off-Time pairs in this POWER-Code
   code_eu079Pairs,
   code_eu079Sequence
 };
@@ -5149,7 +5431,7 @@ uint8_t code_eu080Sequence[] = {
 // POWER-Code table
 struct IrCode code_eu080Code  = {
   38462,     // carrier frequency
-  68,        // number of On-Time/Off-Time pairs in this Off-Code
+  68,        // number of On-Time/Off-Time pairs in this POWER-Code
   code_eu080Pairs,
   code_eu080Sequence
 };
@@ -5171,7 +5453,7 @@ uint8_t code_eu081Sequence[] = {
 // POWER-Code table
 struct IrCode code_eu081Code  = {
   38462,     // carrier frequency
-  80,        // number of On-Time/Off-Time pairs in this Off-Code
+  80,        // number of On-Time/Off-Time pairs in this POWER-Code
   code_eu081Pairs,
   code_eu081Sequence
 };
@@ -5194,7 +5476,7 @@ uint8_t code_eu082Sequence[] = {
 // POWER-Code table
 struct IrCode code_eu082Code  = {
   40000,     // carrier frequency
-  68,        // number of On-Time/Off-Time pairs in this Off-Code
+  68,        // number of On-Time/Off-Time pairs in this POWER-Code
   code_eu082Pairs,
   code_eu082Sequence
 };
@@ -5217,7 +5499,7 @@ uint8_t code_eu083Sequence[] = {
 // POWER-Code table
 struct IrCode code_eu083Code  = {
   33333,     // carrier frequency
-  24,        // number of On-Time/Off-Time pairs in this Off-Code
+  24,        // number of On-Time/Off-Time pairs in this POWER-Code
   code_eu083Pairs,
   code_eu083Sequence
 };
@@ -5239,7 +5521,7 @@ uint8_t code_eu084Sequence[] = {
 // POWER-Code table
 struct IrCode code_eu084Code  = {
   38462,     // carrier frequency
-  24,        // number of On-Time/Off-Time pairs in this Off-Code
+  24,        // number of On-Time/Off-Time pairs in this POWER-Code
   code_eu084Pairs,
   code_eu084Sequence
 };
@@ -5262,7 +5544,7 @@ uint8_t code_eu085Sequence[] = {
 // POWER-Code table
 struct IrCode code_eu085Code  = {
   38462,     // carrier frequency
-  38,        // number of On-Time/Off-Time pairs in this Off-Code
+  38,        // number of On-Time/Off-Time pairs in this POWER-Code
   code_eu085Pairs,
   code_eu085Sequence
 };
@@ -5285,7 +5567,7 @@ uint8_t code_eu086Sequence[] = {
 // POWER-Code table
 struct IrCode code_eu086Code  = {
   33333,     // carrier frequency
-  24,        // number of On-Time/Off-Time pairs in this Off-Code
+  24,        // number of On-Time/Off-Time pairs in this POWER-Code
   code_eu086Pairs,
   code_eu086Sequence
 };
@@ -5306,7 +5588,7 @@ uint8_t code_eu087Sequence[] = {
 // POWER-Code table
 struct IrCode code_eu087Code  = {
   38462,     // carrier frequency
-  24,        // number of On-Time/Off-Time pairs in this Off-Code
+  24,        // number of On-Time/Off-Time pairs in this POWER-Code
   code_eu087Pairs,
   code_eu087Sequence
 };
@@ -5327,7 +5609,7 @@ uint8_t code_eu088Sequence[] = {
 // POWER-Code table
 struct IrCode code_eu088Code  = {
   38462,     // carrier frequency
-  24,        // number of On-Time/Off-Time pairs in this Off-Code
+  24,        // number of On-Time/Off-Time pairs in this POWER-Code
   code_eu088Pairs,
   code_eu088Sequence
 };
@@ -5350,7 +5632,7 @@ uint8_t code_eu089Sequence[] = {
 // POWER-Code table
 struct IrCode code_eu089Code  = {
   38462,     // carrier frequency
-  38,        // number of On-Time/Off-Time pairs in this Off-Code
+  38,        // number of On-Time/Off-Time pairs in this POWER-Code
   code_eu089Pairs,
   code_eu089Sequence
 };
@@ -5373,7 +5655,7 @@ uint8_t code_eu090Sequence[] = {
 // POWER-Code table
 struct IrCode code_eu090Code  = {
   0,         // carrier frequency
-  29,        // number of On-Time/Off-Time pairs in this Off-Code
+  29,        // number of On-Time/Off-Time pairs in this POWER-Code
   code_eu090Pairs,
   code_eu090Sequence
 };
@@ -5395,7 +5677,7 @@ uint8_t code_eu091Sequence[] = {
 // POWER-Code table
 struct IrCode code_eu091Code  = {
   38462,     // carrier frequency
-  30,        // number of On-Time/Off-Time pairs in this Off-Code
+  30,        // number of On-Time/Off-Time pairs in this POWER-Code
   code_eu091Pairs,
   code_eu091Sequence
 };
@@ -5417,7 +5699,7 @@ uint8_t code_eu092Sequence[] = {
 // POWER-Code table
 struct IrCode code_eu092Code  = {
   40000,     // carrier frequency
-  22,        // number of On-Time/Off-Time pairs in this Off-Code
+  22,        // number of On-Time/Off-Time pairs in this POWER-Code
   code_eu092Pairs,
   code_eu092Sequence
 };
@@ -5438,7 +5720,7 @@ uint8_t code_eu093Sequence[] = {
 // POWER-Code table
 struct IrCode code_eu093Code  = {
   35714,     // carrier frequency
-  11,        // number of On-Time/Off-Time pairs in this Off-Code
+  11,        // number of On-Time/Off-Time pairs in this POWER-Code
   code_eu093Pairs,
   code_eu093Sequence
 };
@@ -5461,7 +5743,7 @@ uint8_t code_eu094Sequence[] = {
 // POWER-Code table
 struct IrCode code_eu094Code  = {
   0,         // carrier frequency
-  29,        // number of On-Time/Off-Time pairs in this Off-Code
+  29,        // number of On-Time/Off-Time pairs in this POWER-Code
   code_eu094Pairs,
   code_eu094Sequence
 };
@@ -5483,7 +5765,7 @@ uint8_t code_eu095Sequence[] = {
 // POWER-Code table
 struct IrCode code_eu095Code  = {
   34483,     // carrier frequency
-  16,        // number of On-Time/Off-Time pairs in this Off-Code
+  16,        // number of On-Time/Off-Time pairs in this POWER-Code
   code_eu095Pairs,
   code_eu095Sequence
 };
@@ -5508,7 +5790,7 @@ uint8_t code_eu096Sequence[] = {
 // POWER-Code table
 struct IrCode code_eu096Code  = {
   38462,     // carrier frequency
-  30,        // number of On-Time/Off-Time pairs in this Off-Code
+  30,        // number of On-Time/Off-Time pairs in this POWER-Code
   code_eu096Pairs,
   code_eu096Sequence
 };
@@ -5530,7 +5812,7 @@ uint8_t code_eu097Sequence[] = {
 // POWER-Code table
 struct IrCode code_eu097Code  = {
   34483,     // carrier frequency
-  16,        // number of On-Time/Off-Time pairs in this Off-Code
+  16,        // number of On-Time/Off-Time pairs in this POWER-Code
   code_eu097Pairs,
   code_eu097Sequence
 };
@@ -5552,7 +5834,7 @@ uint8_t code_eu098Sequence[] = {
 // POWER-Code table
 struct IrCode code_eu098Code  = {
   0,         // carrier frequency
-  27,        // number of On-Time/Off-Time pairs in this Off-Code
+  27,        // number of On-Time/Off-Time pairs in this POWER-Code
   code_eu098Pairs,
   code_eu098Sequence
 };
@@ -5577,7 +5859,7 @@ uint8_t code_eu099Sequence[] = {
 // POWER-Code table
 struct IrCode code_eu099Code  = {
   35714,     // carrier frequency
-  46,        // number of On-Time/Off-Time pairs in this Off-Code
+  46,        // number of On-Time/Off-Time pairs in this POWER-Code
   code_eu099Pairs,
   code_eu099Sequence
 };
@@ -5599,7 +5881,7 @@ uint8_t code_eu100Sequence[] = {
 // POWER-Code table
 struct IrCode code_eu100Code  = {
   0,         // carrier frequency
-  27,        // number of On-Time/Off-Time pairs in this Off-Code
+  27,        // number of On-Time/Off-Time pairs in this POWER-Code
   code_eu100Pairs,
   code_eu100Sequence
 };
@@ -5620,7 +5902,7 @@ uint8_t code_eu101Sequence[] = {
 // POWER-Code table
 struct IrCode code_eu101Code  = {
   38462,     // carrier frequency
-  24,        // number of On-Time/Off-Time pairs in this Off-Code
+  24,        // number of On-Time/Off-Time pairs in this POWER-Code
   code_eu101Pairs,
   code_eu101Sequence
 };
@@ -5641,7 +5923,7 @@ uint8_t code_eu102Sequence[] = {
 // POWER-Code table
 struct IrCode code_eu102Code  = {
   38462,     // carrier frequency
-  24,        // number of On-Time/Off-Time pairs in this Off-Code
+  24,        // number of On-Time/Off-Time pairs in this POWER-Code
   code_eu102Pairs,
   code_eu102Sequence
 };
@@ -5663,7 +5945,7 @@ uint8_t code_eu103Sequence[] = {
 // POWER-Code table
 struct IrCode code_eu103Code  = {
   34483,     // carrier frequency
-  24,        // number of On-Time/Off-Time pairs in this Off-Code
+  24,        // number of On-Time/Off-Time pairs in this POWER-Code
   code_eu103Pairs,
   code_eu103Sequence
 };
@@ -5684,7 +5966,7 @@ uint8_t code_eu104Sequence[] = {
 // POWER-Code table
 struct IrCode code_eu104Code  = {
   38462,     // carrier frequency
-  24,        // number of On-Time/Off-Time pairs in this Off-Code
+  24,        // number of On-Time/Off-Time pairs in this POWER-Code
   code_eu104Pairs,
   code_eu104Sequence
 };
@@ -5708,7 +5990,7 @@ uint8_t code_eu105Sequence[] = {
 // POWER-Code table
 struct IrCode code_eu105Code  = {
   38610,     // carrier frequency
-  38,        // number of On-Time/Off-Time pairs in this Off-Code
+  38,        // number of On-Time/Off-Time pairs in this POWER-Code
   code_eu105Pairs,
   code_eu105Sequence
 };
@@ -5734,7 +6016,7 @@ uint8_t code_eu106Sequence[] = {
 // POWER-Code table
 struct IrCode code_eu106Code  = {
   38462,     // carrier frequency
-  59,        // number of On-Time/Off-Time pairs in this Off-Code
+  59,        // number of On-Time/Off-Time pairs in this POWER-Code
   code_eu106Pairs,
   code_eu106Sequence
 };
@@ -5757,7 +6039,7 @@ uint8_t code_eu107Sequence[] = {
 // POWER-Code table
 struct IrCode code_eu107Code  = {
   33333,     // carrier frequency
-  24,        // number of On-Time/Off-Time pairs in this Off-Code
+  24,        // number of On-Time/Off-Time pairs in this POWER-Code
   code_eu107Pairs,
   code_eu107Sequence
 };
@@ -5778,7 +6060,7 @@ uint8_t code_eu108Sequence[] = {
 // POWER-Code table
 struct IrCode code_eu108Code  = {
   38462,     // carrier frequency
-  24,        // number of On-Time/Off-Time pairs in this Off-Code
+  24,        // number of On-Time/Off-Time pairs in this POWER-Code
   code_eu108Pairs,
   code_eu108Sequence
 };
@@ -5800,13 +6082,14 @@ uint8_t code_eu109Sequence[] = {
 // POWER-Code table
 struct IrCode code_eu109Code  = {
   38462,     // carrier frequency
-  22,        // number of On-Time/Off-Time pairs in this Off-Code
+  22,        // number of On-Time/Off-Time pairs in this POWER-Code
   code_eu109Pairs,
   code_eu109Sequence
 };
 
 
-// code_eu110
+/*
+// code_eu110  --  duplicate of na092
 //
 // table of On-Time/Off-Time pairs
 uint32_t code_eu110Pairs[] = {
@@ -5823,10 +6106,11 @@ uint8_t code_eu110Sequence[] = {
 // POWER-Code table
 struct IrCode code_eu110Code  = {
   38462,     // carrier frequency
-  68,        // number of On-Time/Off-Time pairs in this Off-Code
+  68,        // number of On-Time/Off-Time pairs in this POWER-Code
   code_eu110Pairs,
   code_eu110Sequence
 };
+*/
 
 
 // code_eu111
@@ -5848,13 +6132,14 @@ uint8_t code_eu111Sequence[] = {
 // POWER-Code table
 struct IrCode code_eu111Code  = {
   31250,     // carrier frequency
-  21,        // number of On-Time/Off-Time pairs in this Off-Code
+  21,        // number of On-Time/Off-Time pairs in this POWER-Code
   code_eu111Pairs,
   code_eu111Sequence
 };
 
 
-// code_eu112
+/*
+// code_eu112  --  duplicate of na103
 //
 // table of On-Time/Off-Time pairs
 uint32_t code_eu112Pairs[] = {
@@ -5872,10 +6157,11 @@ uint8_t code_eu112Sequence[] = {
 // POWER-Code table
 struct IrCode code_eu112Code  = {
   38462,     // carrier frequency
-  40,        // number of On-Time/Off-Time pairs in this Off-Code
+  40,        // number of On-Time/Off-Time pairs in this POWER-Code
   code_eu112Pairs,
   code_eu112Sequence
 };
+*/
 
 
 // code_eu113
@@ -5896,7 +6182,7 @@ uint8_t code_eu113Sequence[] = {
 // POWER-Code table
 struct IrCode code_eu113Code  = {
   31250,     // carrier frequency
-  14,        // number of On-Time/Off-Time pairs in this Off-Code
+  14,        // number of On-Time/Off-Time pairs in this POWER-Code
   code_eu113Pairs,
   code_eu113Sequence
 };
@@ -5921,13 +6207,14 @@ uint8_t code_eu114Sequence[] = {
 // POWER-Code table
 struct IrCode code_eu114Code  = {
   30303,     // carrier frequency
-  31,        // number of On-Time/Off-Time pairs in this Off-Code
+  31,        // number of On-Time/Off-Time pairs in this POWER-Code
   code_eu114Pairs,
   code_eu114Sequence
 };
 
 
-// code_eu115
+/*
+// code_eu115  --  duplicate of na065
 //
 // table of On-Time/Off-Time pairs
 uint32_t code_eu115Pairs[] = {
@@ -5944,10 +6231,11 @@ uint8_t code_eu115Sequence[] = {
 // POWER-Code table
 struct IrCode code_eu115Code  = {
   58824,     // carrier frequency
-  77,        // number of On-Time/Off-Time pairs in this Off-Code
+  77,        // number of On-Time/Off-Time pairs in this POWER-Code
   code_eu115Pairs,
   code_eu115Sequence
 };
+*/
 
 
 // code_eu116
@@ -5966,7 +6254,7 @@ uint8_t code_eu116Sequence[] = {
 // POWER-Code table
 struct IrCode code_eu116Code  = {
   0,         // carrier frequency
-  29,        // number of On-Time/Off-Time pairs in this Off-Code
+  29,        // number of On-Time/Off-Time pairs in this POWER-Code
   code_eu116Pairs,
   code_eu116Sequence
 };
@@ -5989,7 +6277,7 @@ uint8_t code_eu117Sequence[] = {
 // POWER-Code table
 struct IrCode code_eu117Code  = {
   31250,     // carrier frequency
-  14,        // number of On-Time/Off-Time pairs in this Off-Code
+  14,        // number of On-Time/Off-Time pairs in this POWER-Code
   code_eu117Pairs,
   code_eu117Sequence
 };
@@ -6011,7 +6299,7 @@ uint8_t code_eu118Sequence[] = {
 // POWER-Code table
 struct IrCode code_eu118Code  = {
   34483,     // carrier frequency
-  24,        // number of On-Time/Off-Time pairs in this Off-Code
+  24,        // number of On-Time/Off-Time pairs in this POWER-Code
   code_eu118Pairs,
   code_eu118Sequence
 };
@@ -6032,7 +6320,7 @@ uint8_t code_eu119Sequence[] = {
 // POWER-Code table
 struct IrCode code_eu119Code  = {
   38462,     // carrier frequency
-  24,        // number of On-Time/Off-Time pairs in this Off-Code
+  24,        // number of On-Time/Off-Time pairs in this POWER-Code
   code_eu119Pairs,
   code_eu119Sequence
 };
@@ -6055,7 +6343,7 @@ uint8_t code_eu120Sequence[] = {
 // POWER-Code table
 struct IrCode code_eu120Code  = {
   38462,     // carrier frequency
-  82,        // number of On-Time/Off-Time pairs in this Off-Code
+  82,        // number of On-Time/Off-Time pairs in this POWER-Code
   code_eu120Pairs,
   code_eu120Sequence
 };
@@ -6078,7 +6366,7 @@ uint8_t code_eu121Sequence[] = {
 // POWER-Code table
 struct IrCode code_eu121Code  = {
   38462,     // carrier frequency
-  52,        // number of On-Time/Off-Time pairs in this Off-Code
+  52,        // number of On-Time/Off-Time pairs in this POWER-Code
   code_eu121Pairs,
   code_eu121Sequence
 };
@@ -6101,7 +6389,7 @@ uint8_t code_eu122Sequence[] = {
 // POWER-Code table
 struct IrCode code_eu122Code  = {
   38462,     // carrier frequency
-  82,        // number of On-Time/Off-Time pairs in this Off-Code
+  82,        // number of On-Time/Off-Time pairs in this POWER-Code
   code_eu122Pairs,
   code_eu122Sequence
 };
@@ -6123,7 +6411,7 @@ uint8_t code_eu123Sequence[] = {
 // POWER-Code table
 struct IrCode code_eu123Code  = {
   40000,     // carrier frequency
-  24,        // number of On-Time/Off-Time pairs in this Off-Code
+  24,        // number of On-Time/Off-Time pairs in this POWER-Code
   code_eu123Pairs,
   code_eu123Sequence
 };
@@ -6146,13 +6434,14 @@ uint8_t code_eu124Sequence[] = {
 // POWER-Code table
 struct IrCode code_eu124Code  = {
   38462,     // carrier frequency
-  38,        // number of On-Time/Off-Time pairs in this Off-Code
+  38,        // number of On-Time/Off-Time pairs in this POWER-Code
   code_eu124Pairs,
   code_eu124Sequence
 };
 
 
-// code_eu125
+/*
+// code_eu125  --  duplicate of ???
 //
 // table of On-Time/Off-Time pairs
 uint32_t code_eu125Pairs[] = {
@@ -6170,10 +6459,11 @@ uint8_t code_eu125Sequence[] = {
 // POWER-Code table
 struct IrCode code_eu125Code  = {
   38462,     // carrier frequency
-  68,        // number of On-Time/Off-Time pairs in this Off-Code
+  68,        // number of On-Time/Off-Time pairs in this POWER-Code
   code_eu125Pairs,
   code_eu125Sequence
 };
+*/
 
 
 // code_eu126
@@ -6195,7 +6485,7 @@ uint8_t code_eu126Sequence[] = {
 // POWER-Code table
 struct IrCode code_eu126Code  = {
   38462,     // carrier frequency
-  38,        // number of On-Time/Off-Time pairs in this Off-Code
+  38,        // number of On-Time/Off-Time pairs in this POWER-Code
   code_eu126Pairs,
   code_eu126Sequence
 };
@@ -6216,7 +6506,7 @@ uint8_t code_eu127Sequence[] = {
 // POWER-Code table
 struct IrCode code_eu127Code  = {
   38462,     // carrier frequency
-  24,        // number of On-Time/Off-Time pairs in this Off-Code
+  24,        // number of On-Time/Off-Time pairs in this POWER-Code
   code_eu127Pairs,
   code_eu127Sequence
 };
@@ -6239,7 +6529,7 @@ uint8_t code_eu128Sequence[] = {
 // POWER-Code table
 struct IrCode code_eu128Code  = {
   41667,     // carrier frequency
-  8,         // number of On-Time/Off-Time pairs in this Off-Code
+  8,         // number of On-Time/Off-Time pairs in this POWER-Code
   code_eu128Pairs,
   code_eu128Sequence
 };
@@ -6265,7 +6555,7 @@ uint8_t code_eu129Sequence[] = {
 // POWER-Code table
 struct IrCode code_eu129Code  = {
   38462,     // carrier frequency
-  45,        // number of On-Time/Off-Time pairs in this Off-Code
+  45,        // number of On-Time/Off-Time pairs in this POWER-Code
   code_eu129Pairs,
   code_eu129Sequence
 };
@@ -6291,7 +6581,7 @@ uint8_t code_eu130Sequence[] = {
 // POWER-Code table
 struct IrCode code_eu130Code  = {
   38462,     // carrier frequency
-  45,        // number of On-Time/Off-Time pairs in this Off-Code
+  45,        // number of On-Time/Off-Time pairs in this POWER-Code
   code_eu130Pairs,
   code_eu130Sequence
 };
@@ -6312,7 +6602,7 @@ uint8_t code_eu131Sequence[] = {
 // POWER-Code table
 struct IrCode code_eu131Code  = {
   38462,     // carrier frequency
-  24,        // number of On-Time/Off-Time pairs in this Off-Code
+  24,        // number of On-Time/Off-Time pairs in this POWER-Code
   code_eu131Pairs,
   code_eu131Sequence
 };
@@ -6333,7 +6623,7 @@ uint8_t code_eu132Sequence[] = {
 // POWER-Code table
 struct IrCode code_eu132Code  = {
   0,         // carrier frequency
-  23,        // number of On-Time/Off-Time pairs in this Off-Code
+  23,        // number of On-Time/Off-Time pairs in this POWER-Code
   code_eu132Pairs,
   code_eu132Sequence
 };
@@ -6354,7 +6644,7 @@ uint8_t code_eu133Sequence[] = {
 // POWER-Code table
 struct IrCode code_eu133Code  = {
   38462,     // carrier frequency
-  24,        // number of On-Time/Off-Time pairs in this Off-Code
+  24,        // number of On-Time/Off-Time pairs in this POWER-Code
   code_eu133Pairs,
   code_eu133Sequence
 };
@@ -6376,7 +6666,7 @@ uint8_t code_eu134Sequence[] = {
 // POWER-Code table
 struct IrCode code_eu134Code  = {
   40000,     // carrier frequency
-  24,        // number of On-Time/Off-Time pairs in this Off-Code
+  24,        // number of On-Time/Off-Time pairs in this POWER-Code
   code_eu134Pairs,
   code_eu134Sequence
 };
@@ -6397,7 +6687,7 @@ uint8_t code_eu135Sequence[] = {
 // POWER-Code table
 struct IrCode code_eu135Code  = {
   0,         // carrier frequency
-  23,        // number of On-Time/Off-Time pairs in this Off-Code
+  23,        // number of On-Time/Off-Time pairs in this POWER-Code
   code_eu135Pairs,
   code_eu135Sequence
 };
@@ -6422,7 +6712,7 @@ uint8_t code_eu136Sequence[] = {
 // POWER-Code table
 struct IrCode code_eu136Code  = {
   38462,     // carrier frequency
-  38,        // number of On-Time/Off-Time pairs in this Off-Code
+  38,        // number of On-Time/Off-Time pairs in this POWER-Code
   code_eu136Pairs,
   code_eu136Sequence
 };
@@ -6446,7 +6736,7 @@ uint8_t code_eu137Sequence[] = {
 // POWER-Code table
 struct IrCode code_eu137Code  = {
   35714,     // carrier frequency
-  22,        // number of On-Time/Off-Time pairs in this Off-Code
+  22,        // number of On-Time/Off-Time pairs in this POWER-Code
   code_eu137Pairs,
   code_eu137Sequence
 };
@@ -6467,7 +6757,7 @@ uint8_t code_eu138Sequence[] = {
 // POWER-Code table
 struct IrCode code_eu138Code  = {
   0,         // carrier frequency
-  11,        // number of On-Time/Off-Time pairs in this Off-Code
+  11,        // number of On-Time/Off-Time pairs in this POWER-Code
   code_eu138Pairs,
   code_eu138Sequence
 };
@@ -6490,7 +6780,7 @@ uint8_t code_eu139Sequence[] = {
 // POWER-Code table
 struct IrCode code_eu139Code  = {
   0,     // carrier frequency
-  30,    // number of On-Time/Off-Time pairs in this Off-Code
+  30,    // number of On-Time/Off-Time pairs in this POWER-Code
   code_eu139Pairs,
   code_eu139Sequence
 };
@@ -6505,6 +6795,7 @@ struct IrCode code_eu139Code  = {
 
 extern "C" struct IrCode * NApowerCodes[]  = {
   &code_na000Code,
+  &code_NECCode,
   &code_na001Code,
   &code_na002Code,
   &code_na003Code,
@@ -6512,8 +6803,12 @@ extern "C" struct IrCode * NApowerCodes[]  = {
   &code_na005Code,
   &code_na006Code,
   &code_na007Code,
+  &code_na020Code,
   &code_na008Code,
   &code_na009Code,
+  &code_TCLCode,
+  &code_GrundigCode,
+  &code_SamsungCode,
   &code_na010Code,
   &code_na011Code,
   &code_na012Code,
@@ -6523,19 +6818,22 @@ extern "C" struct IrCode * NApowerCodes[]  = {
   &code_na016Code,
   &code_na017Code,
   &code_na018Code,
+  &code_RokuCode,
+  &code_Samsung2Code,
   &code_na019Code,
-  &code_na020Code,
   &code_na021Code,
   &code_na022Code,
   &code_na023Code,
   &code_na024Code,
   &code_na025Code,
+  &code_HisenseCode,
   &code_na026Code,
   &code_na027Code,
   &code_na028Code,
   &code_na029Code,
   &code_na030Code,
   &code_na031Code,
+  &code_ToshibaCode,
   &code_na032Code,
   &code_na033Code,
   &code_na034Code,
@@ -6545,7 +6843,6 @@ extern "C" struct IrCode * NApowerCodes[]  = {
   &code_na038Code,
   &code_na039Code,
   &code_na040Code,
-  &code_na041Code,
   &code_na042Code,
   &code_na043Code,
   &code_na044Code,
@@ -6587,7 +6884,6 @@ extern "C" struct IrCode * NApowerCodes[]  = {
   &code_na080Code,
   &code_na081Code,
   &code_na082Code,
-  &code_na083Code,
   &code_na084Code,
   &code_na085Code,
   &code_na086Code,
@@ -6619,17 +6915,16 @@ extern "C" struct IrCode * NApowerCodes[]  = {
   &code_na112Code,
   &code_na113Code,
   &code_na114Code,
+  &code_samsungOFFCode,
   &code_na115Code,
   &code_na116Code,
   &code_na117Code,
   &code_na118Code,
-  &code_na119Code,
   &code_na120Code,
   &code_na121Code,
   &code_na122Code,
   &code_na123Code,
   &code_na124Code,
-  &code_na125Code,
   &code_na126Code,
   &code_na127Code,
   &code_na128Code,
@@ -6647,41 +6942,47 @@ extern "C" struct IrCode * NApowerCodes[]  = {
 extern "C" struct IrCode * EUpowerCodes[]  = {
     &code_eu000Code,
     &code_eu001Code,
-    &code_eu002Code,
-    &code_eu003Code,
-    &code_eu004Code,
-    &code_eu005Code,
-    &code_eu006Code,
-    &code_eu007Code,
-    &code_eu008Code,
-    &code_eu009Code,
-    &code_eu010Code,
+    &code_na000Code,
+    &code_na002Code,
+    &code_na003Code,
+    &code_na006Code,
+    &code_na010Code,
+    &code_na011Code,
+    &code_na005Code,
+    &code_na020Code,
+    &code_na004Code,
     &code_eu011Code,
+    &code_NECCode,
+    &code_TCLCode,
+    &code_GrundigCode,
+    &code_SamsungCode,
     &code_eu012Code,
-    &code_eu013Code,
-    &code_eu014Code,
-    &code_eu015Code,
+    &code_na136Code,
+    &code_na021Code,
+    &code_na018Code,
     &code_eu016Code,
     &code_eu017Code,
-    &code_eu018Code,
+    &code_na123Code,
     &code_eu019Code,
     &code_eu020Code,
+    &code_RokuCode,
+    &code_Samsung2Code,
     &code_eu021Code,
     &code_eu022Code,
-    &code_eu023Code,
+    &code_na022Code,
     &code_eu024Code,
     &code_eu025Code,
     &code_eu026Code,
+    &code_HisenseCode,
     &code_eu027Code,
     &code_eu028Code,
     &code_eu029Code,
-    &code_eu030Code,
     &code_eu031Code,
     &code_eu032Code,
     &code_eu033Code,
+    &code_ToshibaCode,
     &code_eu034Code,
-    //&code_eu035Code, same as eu009
-    &code_eu036Code,
+    &code_na104Code,
     &code_eu037Code,
     &code_eu038Code,
     &code_eu039Code,
@@ -6702,7 +7003,6 @@ extern "C" struct IrCode * EUpowerCodes[]  = {
     &code_eu054Code,
     &code_eu055Code,
     &code_eu056Code,
-    //&code_eu057Code, same as eu008
     &code_eu058Code,
     &code_eu059Code,
     &code_eu060Code,
@@ -6755,12 +7055,13 @@ extern "C" struct IrCode * EUpowerCodes[]  = {
     &code_eu107Code,
     &code_eu108Code,
     &code_eu109Code,
-    &code_eu110Code,
+    &code_na092Code,
     &code_eu111Code,
-    &code_eu112Code,
+    &code_na103Code,
     &code_eu113Code,
     &code_eu114Code,
-    &code_eu115Code,
+    &code_samsungOFFCode,
+    &code_na065Code,
     &code_eu116Code,
     &code_eu117Code,
     &code_eu118Code,
@@ -6770,7 +7071,6 @@ extern "C" struct IrCode * EUpowerCodes[]  = {
     &code_eu122Code,
     &code_eu123Code,
     &code_eu124Code,
-    &code_eu125Code,
     &code_eu126Code,
     &code_eu127Code,
     &code_eu128Code,
