@@ -22,12 +22,15 @@
 #include "main.h"
 
 #include <inttypes.h>           /* PRIu32 */
+#include <stdbool.h>
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
 #include "driver/gpio.h"
-#include "driver/ledc.h"
+#include "driver/rmt_common.h"
+#include "driver/rmt_encoder.h"
+#include "driver/rmt_tx.h"
+#include "esp_err.h"
 #include "esp_log.h"
-#include "esp_rom_sys.h"
 
 static const char *TAG = "TV-B-Gone";
 
@@ -40,10 +43,11 @@ static const char *TAG = "TV-B-Gone";
 #define TIME_BETWEEN_CODES  205   /* gap between POWER-Codes */
 #define BLIP_TIME           125   /* delay between indication blinks */
 
-/* LEDC / PWM constants */
-#define DUTY_RESOLUTION       8   /* 8-bit → duty range 0–255 */
-#define DUTY_CYCLE          128   /* 50% duty cycle */
-#define PWM_CHANNEL           0   /* LEDC channel */
+/* RMT timing constants */
+#define RMT_RESOLUTION_HZ        1000000U
+#define RMT_MEM_BLOCK_SYMBOLS    128
+#define RMT_MAX_DURATION_TICKS   32767U
+#define RMT_MAX_SYMBOLS          1280U
 
 /* Power-code arrays defined in WORLDcodes.cpp (extern "C" there → plain C here) */
 extern struct IrCode *NApowerCodes[];
@@ -51,44 +55,152 @@ extern struct IrCode *EUpowerCodes[];
 extern uint8_t num_NAcodes;
 extern uint8_t num_EUcodes;
 
+static rmt_channel_handle_t ir_rmt_channel;
+static rmt_encoder_handle_t ir_copy_encoder;
+static rmt_symbol_word_t ir_symbols[RMT_MAX_SYMBOLS];
+
 /* Forward declarations */
-static void xmitPair(uint32_t carFreq, uint32_t onTime, uint32_t offTime);
+static size_t append_half_level(rmt_symbol_word_t *symbols, size_t symbol_index,
+                                bool *has_pending_half, bool *pending_level,
+                                uint16_t *pending_duration, uint32_t duration_us,
+                                bool level);
+static size_t build_power_code_symbols(rmt_symbol_word_t *symbols, size_t max_symbols,
+                                       int numPairs, uint32_t *pairsTab_ptr,
+                                       uint8_t *sequenceTab_ptr);
+static void xmitCode(uint32_t carrierFreq, int numPairs, uint32_t *pairsTab_ptr,
+                     uint8_t *sequenceTab_ptr);
 static void blinkLEDnTimes(int numBlinks);
 static void tvb_gone_task(void *pvParameters);
 
 
 /* -----------------------------------------------------------------------
- * xmitPair()
+ * append_half_level()
  *
- * Transmit one On-Time/Off-Time IR pulse pair.
- *
- * If carFreq != 0: pulse the IR LED at carFreq Hz for onTime µs,
- *                  then keep it off for offTime µs.
- * If carFreq == 0: hold IR LED solidly ON for onTime µs (no carrier),
- *                  then off for offTime µs.
- *
- * LEDC is initialised once in app_main(); only frequency and duty are
- * updated here, avoiding repeated GPIO reservation.
+ * Append one logical level segment to the RMT stream, splitting long
+ * durations across multiple half-symbol slots while preserving the level.
  * ----------------------------------------------------------------------- */
-static void xmitPair(uint32_t carFreq, uint32_t onTime, uint32_t offTime)
+static size_t append_half_level(rmt_symbol_word_t *symbols, size_t symbol_index,
+                                bool *has_pending_half, bool *pending_level,
+                                uint16_t *pending_duration, uint32_t duration_us,
+                                bool level)
 {
-    DEBUGP(ESP_LOGI(TAG, "%" PRIu32 ", %" PRIu32, onTime, offTime));
+    while (duration_us > 0) {
+        uint16_t chunk_ticks = (duration_us > RMT_MAX_DURATION_TICKS)
+                                   ? (uint16_t)RMT_MAX_DURATION_TICKS
+                                   : (uint16_t)duration_us;
 
-    if (carFreq != 0) {
-        /* Update carrier frequency then enable PWM output */
-        ledc_set_freq(LEDC_LOW_SPEED_MODE, LEDC_TIMER_0, carFreq);
-        ledc_set_duty(LEDC_LOW_SPEED_MODE, (ledc_channel_t)PWM_CHANNEL, DUTY_CYCLE);
-        ledc_update_duty(LEDC_LOW_SPEED_MODE, (ledc_channel_t)PWM_CHANNEL);
-    } else {
-        /* No carrier — hold IR LED solidly ON via LEDC idle level */
-        ledc_stop(LEDC_LOW_SPEED_MODE, (ledc_channel_t)PWM_CHANNEL, 1);
+        if (!*has_pending_half) {
+            *pending_level = level;
+            *pending_duration = chunk_ticks;
+            *has_pending_half = true;
+        } else {
+            symbols[symbol_index].level0 = *pending_level;
+            symbols[symbol_index].duration0 = *pending_duration;
+            symbols[symbol_index].level1 = level;
+            symbols[symbol_index].duration1 = chunk_ticks;
+            symbol_index++;
+            *has_pending_half = false;
+        }
+
+        duration_us -= chunk_ticks;
     }
 
-    esp_rom_delay_us(onTime);   /* ON period — busy-wait required for µs accuracy */
+    return symbol_index;
+}
 
-    /* IR LED OFF: stop PWM, hold output LOW */
-    ledc_stop(LEDC_LOW_SPEED_MODE, (ledc_channel_t)PWM_CHANNEL, 0);
-    esp_rom_delay_us(offTime);  /* OFF period */
+/* -----------------------------------------------------------------------
+ * build_power_code_symbols()
+ *
+ * Convert a POWER-Code's mark/space sequence into an RMT symbol array.
+ * ----------------------------------------------------------------------- */
+static size_t build_power_code_symbols(rmt_symbol_word_t *symbols, size_t max_symbols,
+                                       int numPairs, uint32_t *pairsTab_ptr,
+                                       uint8_t *sequenceTab_ptr)
+{
+    size_t symbol_index = 0;
+    bool has_pending_half = false;
+    bool pending_level = false;
+    uint16_t pending_duration = 0;
+
+    for (int i = 0; i < numPairs; i++) {
+        uint8_t pairsIndex = sequenceTab_ptr[i] * 2;
+        uint32_t onTime = pairsTab_ptr[pairsIndex];
+        uint32_t offTime = pairsTab_ptr[pairsIndex + 1];
+
+        DEBUGP(ESP_LOGI(TAG, "pair[%d] = %" PRIu32 ", %" PRIu32, i, onTime, offTime));
+
+        symbol_index = append_half_level(symbols, symbol_index, &has_pending_half,
+                                         &pending_level, &pending_duration,
+                                         onTime, true);
+        symbol_index = append_half_level(symbols, symbol_index, &has_pending_half,
+                                         &pending_level, &pending_duration,
+                                         offTime, false);
+
+        if (symbol_index >= max_symbols) {
+            ESP_LOGE(TAG, "RMT symbol buffer overflow while encoding POWER-Code");
+            return 0;
+        }
+    }
+
+    if (has_pending_half) {
+        if (symbol_index >= max_symbols) {
+            ESP_LOGE(TAG, "RMT symbol buffer overflow while finalizing POWER-Code");
+            return 0;
+        }
+        symbols[symbol_index].level0 = pending_level;
+        symbols[symbol_index].duration0 = pending_duration;
+        symbols[symbol_index].level1 = LOW;
+        symbols[symbol_index].duration1 = 0;
+        symbol_index++;
+    }
+
+    return symbol_index;
+}
+
+/* -----------------------------------------------------------------------
+ * xmitCode()
+ *
+ * Transmit one full POWER-Code using the ESP-IDF 5.5 RMT TX driver.
+ * ----------------------------------------------------------------------- */
+static void xmitCode(uint32_t carrierFreq, int numPairs, uint32_t *pairsTab_ptr,
+                     uint8_t *sequenceTab_ptr)
+{
+    size_t symbol_count = build_power_code_symbols(ir_symbols, RMT_MAX_SYMBOLS,
+                                                   numPairs, pairsTab_ptr,
+                                                   sequenceTab_ptr);
+    rmt_transmit_config_t tx_config = {
+        .loop_count = 0,
+        .flags = {
+            .eot_level = LOW,
+            .queue_nonblocking = 0,
+        },
+    };
+
+    if (symbol_count == 0) {
+        ESP_LOGE(TAG, "Skipping POWER-Code transmit because symbol build failed");
+        return;
+    }
+
+    if (carrierFreq != 0) {
+        rmt_carrier_config_t carrier_cfg = {
+            .frequency_hz = carrierFreq,
+            .duty_cycle = 0.5f,
+            .flags = {
+                .polarity_active_low = 0,
+                .always_on = 0,
+            },
+        };
+        ESP_ERROR_CHECK(rmt_apply_carrier(ir_rmt_channel, &carrier_cfg));
+    } else {
+        ESP_ERROR_CHECK(rmt_apply_carrier(ir_rmt_channel, NULL));
+    }
+
+    DEBUGP(ESP_LOGI(TAG, "Built %u RMT symbols for %" PRIu32 " Hz carrier",
+                    (unsigned int)symbol_count, carrierFreq));
+
+    ESP_ERROR_CHECK(rmt_transmit(ir_rmt_channel, ir_copy_encoder, ir_symbols,
+                                 symbol_count * sizeof(ir_symbols[0]), &tx_config));
+    ESP_ERROR_CHECK(rmt_tx_wait_all_done(ir_rmt_channel, -1));
 }
 
 
@@ -126,6 +238,7 @@ static void blinkLEDnTimes(int numBlinks)
  * ----------------------------------------------------------------------- */
 static void tvb_gone_task(void *pvParameters)
 {
+    (void)pvParameters;
     int buttonStateNA;
     int buttonStateEU;
     int buttonStateNA_again;
@@ -135,9 +248,6 @@ static void tvb_gone_task(void *pvParameters)
     int numCodes = 0;
     int numPairs;
     uint32_t carrierFreq;
-    uint8_t  pairsIndex;
-    uint32_t OnTime;
-    uint32_t OffTime;
     struct IrCode *pwrCode_ptr;
     uint32_t      *pairsTab_ptr;
     uint8_t       *sequenceTab_ptr;
@@ -218,15 +328,7 @@ static void tvb_gone_task(void *pvParameters)
 #endif
 
                     ESP_LOGI(TAG, "Transmitting POWER-Code %d...", powerCodeCount);
-
-                    for (int i = 0; i < numPairs; i++) {
-                        pairsIndex = sequenceTab_ptr[i];
-                        DEBUGP(ESP_LOGI(TAG, " %d: ", pairsIndex));
-                        pairsIndex = pairsIndex * 2;
-                        OnTime  = pairsTab_ptr[pairsIndex];
-                        OffTime = pairsTab_ptr[pairsIndex + 1];
-                        xmitPair(carrierFreq, OnTime, OffTime);
-                    }
+                    xmitCode(carrierFreq, numPairs, pairsTab_ptr, sequenceTab_ptr);
 
                     ESP_LOGI(TAG, "Done");
 
@@ -267,7 +369,6 @@ static void tvb_gone_task(void *pvParameters)
 
             } else {
                 /* No button pressed — keep outputs safe and yield */
-                ledc_stop(LEDC_LOW_SPEED_MODE, (ledc_channel_t)PWM_CHANNEL, 0); /* IR LED off */
                 gpio_set_level((gpio_num_t)VISLED, HIGH);                        /* VIS LED off */
                 vTaskDelay(pdMS_TO_TICKS(10));
             }
@@ -286,33 +387,29 @@ static void tvb_gone_task(void *pvParameters)
  * ----------------------------------------------------------------------- */
 void app_main(void)
 {
-    /* Visible LED pin — LEDC manages IRLED so do NOT call gpio_set_direction on it */
+    /* Visible LED pin */
     gpio_set_direction((gpio_num_t)VISLED, GPIO_MODE_OUTPUT);
 
-    /* Initialise LEDC timer and channel once — GPIO is claimed here only */
-    ledc_timer_config_t ledc_timer = {
-        .speed_mode      = LEDC_LOW_SPEED_MODE,
-        .duty_resolution = (ledc_timer_bit_t)DUTY_RESOLUTION,
-        .timer_num       = LEDC_TIMER_0,
-        .freq_hz         = 38000,   /* default; overridden per-code by ledc_set_freq() */
-        .clk_cfg         = LEDC_AUTO_CLK,
-        .deconfigure     = false,
+    /* Initialise one reusable RMT TX channel for the IR LED */
+    rmt_tx_channel_config_t tx_chan_cfg = {
+        .gpio_num = (gpio_num_t)IRLED,
+        .clk_src = RMT_CLK_SRC_DEFAULT,
+        .resolution_hz = RMT_RESOLUTION_HZ,
+        .mem_block_symbols = RMT_MEM_BLOCK_SYMBOLS,
+        .trans_queue_depth = 1,
+        .intr_priority = 0,
+        .flags = {
+            .invert_out = 0,
+            .with_dma = 0,
+            .io_loop_back = 0,
+            .io_od_mode = 0,
+            .allow_pd = 0,
+        },
     };
-    ledc_timer_config(&ledc_timer);
-
-    ledc_channel_config_t ledc_channel = {
-        .gpio_num   = IRLED,
-        .speed_mode = LEDC_LOW_SPEED_MODE,
-        .channel    = (ledc_channel_t)PWM_CHANNEL,
-        .intr_type  = LEDC_INTR_DISABLE,
-        .timer_sel  = LEDC_TIMER_0,
-        .duty       = 0,   /* IR LED off at startup */
-        .hpoint     = 0,
-        .sleep_mode = LEDC_SLEEP_MODE_NO_ALIVE_NO_PD,
-        .flags      = { .output_invert = 0 },
-    };
-    ledc_channel_config(&ledc_channel);
-    ledc_stop(LEDC_LOW_SPEED_MODE, (ledc_channel_t)PWM_CHANNEL, 0);
+    rmt_copy_encoder_config_t copy_encoder_cfg = {};
+    ESP_ERROR_CHECK(rmt_new_tx_channel(&tx_chan_cfg, &ir_rmt_channel));
+    ESP_ERROR_CHECK(rmt_new_copy_encoder(&copy_encoder_cfg, &ir_copy_encoder));
+    ESP_ERROR_CHECK(rmt_enable(ir_rmt_channel));
 
     /* NA and EU pushbutton pins — inputs with internal pull-ups */
     gpio_config_t btn_conf = {

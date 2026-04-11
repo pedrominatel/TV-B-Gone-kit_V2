@@ -1,7 +1,7 @@
 {
     "version":            "1.2",
     "project_name":       "TV-B-Gone_kit_V2",
-    "project_version":    "d03788d-dirty",
+    "project_version":    "b599548-dirty",
     "project_path":       "/Users/pedrominatel/Documents/Espressif/github/TV-B-Gone-kit_V2/firmware/TV-B-Gone_kit_V2_idf",
     "idf_path":           "/Users/pedrominatel/esp/v5.5.1/esp-idf",
     "build_dir":          "/Users/pedrominatel/Documents/Espressif/github/TV-B-Gone-kit_V2/firmware/TV-B-Gone_kit_V2_idf/build",
