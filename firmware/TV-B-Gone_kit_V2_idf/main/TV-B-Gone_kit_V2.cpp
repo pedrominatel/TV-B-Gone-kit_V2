@@ -1,0 +1,505 @@
+/*
+  This TV-B-Gone sketch is for the TV-B-Gone V2 kit
+     using the ESP32-C3 Super Mini board.
+        This sketch will also work for both: 
+           ESP32 WEMOS D1 MINI and HOPE badge Rel 0.4.18 (with ESP32-C3)
+              -- (but with different pin definitions)
+
+  NOTE: Please see the comments at the "xmitPair()" function (down below)
+        for an explanation of the TV-B-Gone project as well as for how this sketch works.
+
+
+  These are the ESP-IDF v5.5 build settings to use:
+     Target:  esp32c3
+     Build:   idf.py set-target esp32c3 && idf.py build
+     Flash:   idf.py flash monitor
+
+
+  When you click the NA or EU pushbutton:
+      quickly blink the visible LED 3x for NA and 6x for EU
+      for all codes for the given region (NA or EU):
+           blip the visible LED
+           grab the info for the next POWER-Code from WORLDcodes.cpp
+           transmit the POWER-Code on the IR LED (using the ESP-IDF LEDC driver for PWM)
+           delay 205 msec
+           If the EU or NA push-button is pushed while transmitting the database of POWER-Codes,
+                then start transmitting the entire sequence again from the beginning.
+      quickly blink the visible LED 3x for NA and 6x for EU
+
+  The hardware to connect to the ESP32-C3:
+  - 3xAA battery pack connected between the "5V" pin and the "GND" pin (Vcc is thus 4.5V)
+  - IR LED connected to digital output pin 2 through an IRLU024NPBF MOSFET amplifier:
+       -- Source to GND
+       -- Gate through a 1K resistor to digital output pin GPIO2
+       --    47K Pull-down resistor between Gate and GND
+       -- Drain to 4.7 Ohm (1/2W) resistor to IR333 LED to +4.5V (LED Anode to +4.5V)
+       --    (It is possible to use severl IR333/4.7 Ohm resistor pairs in parallel)
+  - NA pushbutton attached between digital input pin GPIO10 and GND (with internal pullup resistor enabled)
+  - EU pushbutton attached between digital input pin GPIO9 and GND (with internal pullup resistor enabled)
+  - (For the visible LED indicator, we use the built-in LED on the ESP32-C3 Super Mini, which is internally connected to GPIO8)
+
+
+  12-Jul-2025   Mitch Altman
+  hacked from Arduino example sketches
+     and from the Random Nerd Tutorials on "ESP32 PWM with Arduino IDE"
+     https://randomnerdtutorials.com/esp32-pwm-arduino-ide/#esp32-pwm-ledc-example-code
+
+  17-Jul-2025   Mitch Altman
+  Got the pointers to work well, for pointing to the appropriate tables for transmitting each POWER-Code
+  (but I couldn't figure out how to make the pointers work with the database of POWER-Codes as constants, so they are all variables).
+
+  21-Jan-2026   Mitch Altman
+  Updated for ESP32-C3 Super Mini board
+
+  10-Apr-2026
+  Converted from Arduino to ESP-IDF v5.5:
+     - Serial.begin / Serial.print/println  -> ESP_LOGI
+     - pinMode                              -> gpio_set_direction / gpio_config
+     - digitalWrite / digitalRead           -> gpio_set_level / gpio_get_level
+     - delay                                -> vTaskDelay(pdMS_TO_TICKS())
+     - ledcAttachChannel / ledcWrite /
+       ledcDetach                           -> ledc_timer_config / ledc_channel_config / ledc_stop
+     - ets_delay_us                         -> esp_rom_delay_us
+     - setup() + loop()                     -> called from app_main()
+
+
+  Creative Commons CC BY-SA 4.0
+  This license enables reusers to distribute, remix, adapt, and build
+  upon the material in any medium or format, so long as attribution is
+  given to the creator. The license allows for commercial use. If you remix, adapt, or
+  build upon the material, you must license the modified material under identical
+  terms. CC BY-SA includes the following elements:
+     BY: credit must be given to the creator.
+     SA: Adaptations must be shared under the same terms.
+
+*/
+
+
+#include "main.h"
+
+#include "freertos/FreeRTOS.h"
+#include "freertos/task.h"
+#include "driver/gpio.h"
+#include "driver/ledc.h"
+#include "esp_log.h"
+#include "esp_rom_sys.h"
+
+static const char *TAG = "TV-B-Gone";
+
+// GPIO level aliases (matching Arduino conventions used throughout the code)
+#define LOW  0
+#define HIGH 1
+
+
+// definitions for timings
+#define VIS_LED_BLIP_TIME 25     // blip the visible LED this long (in msec) before transmitting a POWER-Code
+#define TIME_BETWEEN_CODES 205   // time to wait (in msec) after sending a POWER-Code and before sending the next POWER-Code
+#define BLIP_TIME 125            // length of delay between blinks when quickly blinking the LED
+
+// definitions needed for the ESP-IDF LEDC driver
+#define DUTY_RESOLUTION 8        // use 8-bit PWM duty cycle resolution (which allows DUTY_CYCLE to have a value of 0 to 255)
+#define DUTY_CYCLE 128           // PWM duty cycle (since DUTY_RESOLUTION=8, 128 is a 50% duty cycle)
+#define PWM_CHANNEL 0            // PWM channel to use (for this sketch, which channel we use isn't important)
+
+// variables
+int buttonStateNA = 0;         // for reading the NA pushbutton status
+int buttonStateEU = 0;         // for reading the EU pushbutton status
+int buttonStateNA_again = 0;   // for reading the NA pushbutton status if it is pushed during the transmission of the POWER-Codes
+int buttonStateEU_again = 0;   // for reading the EU pushbutton status if it is pushed during the transmission of the POWER-Codes
+int region;                    // keep track of either NA or EU
+int startOver;                 // for starting the transmission over from the beginning, if the user presses a button while transmitting
+int numCodes;                  // number of POWER-Codes to transmit (will be set to either num_NAcodes or num_EUcodes, depending on which region we're transmitting)
+int numPairs;                  // number of On-Time/Off-Time pairs that comprise a POWER-Code (which is gotten from the POWER-Code's Code table)
+uint32_t carrierFreq;          // for reading the Carrier Frequency from the Codes table for each POWER-Code
+uint8_t pairsIndex;            // for reading the next index from the POWER-Code's Sequence table -- this is an index to the POWER-Code's Pairs table (of unique On-Time/Off-Time pairs)
+uint32_t OnTime;               // for reading the On-Time from the POWER-Code's Pairs table
+uint32_t OffTime;              // for reading the Off-Time from the POWER-Code's Pairs table
+
+// constants and variables from "WORLDcodes.cpp"
+extern "C" struct IrCode * NApowerCodes[];
+extern "C" struct IrCode * EUpowerCodes[];
+extern uint8_t num_NAcodes;
+extern uint8_t num_EUcodes;
+
+// pointers for grabbing the appropriate info for each POWER-Code to transmit
+struct IrCode * pwrCode_ptr;   // points to either the table of NApowerCodes or EUpowerCodes
+uint32_t * pairsTab_ptr;       // points to the Pairs table for a POWER-Code (which contains all of the unique On-Time/Off-Time pairs for a given POWER-Code)
+uint8_t * sequenceTab_ptr;     // points to the Sequence table for a POWER-Code (which contains indices into the Pairs table, for transmitting the proper sequence of On-Time/Off-time pairs for the POWER-Code)
+
+
+
+/****************************************/
+/****************************************/
+void setup() {
+  // initialize the visible LED pin as an output
+  // (IRLED is managed by LEDC -- do not call gpio_set_direction on it)
+  gpio_set_direction((gpio_num_t)VISLED, GPIO_MODE_OUTPUT);
+
+  // initialize the LEDC timer and channel once so the GPIO is claimed only once;
+  // xmitPair() will call ledc_set_freq/ledc_set_duty/ledc_update_duty to control the output
+  ledc_timer_config_t ledc_timer = {
+    .speed_mode      = LEDC_LOW_SPEED_MODE,
+    .duty_resolution = (ledc_timer_bit_t)DUTY_RESOLUTION,
+    .timer_num       = LEDC_TIMER_0,
+    .freq_hz         = 38000,   // default; overridden per code by ledc_set_freq()
+    .clk_cfg         = LEDC_AUTO_CLK,
+    .deconfigure     = false,
+  };
+  ledc_timer_config(&ledc_timer);
+
+  ledc_channel_config_t ledc_channel = {
+    .gpio_num   = IRLED,
+    .speed_mode = LEDC_LOW_SPEED_MODE,
+    .channel    = (ledc_channel_t)PWM_CHANNEL,
+    .intr_type  = LEDC_INTR_DISABLE,
+    .timer_sel  = LEDC_TIMER_0,
+    .duty       = 0,   // IR LED off at startup
+    .hpoint     = 0,
+    .sleep_mode = LEDC_SLEEP_MODE_NO_ALIVE_NO_PD,
+    .flags      = { .output_invert = 0 },
+  };
+  ledc_channel_config(&ledc_channel);
+  ledc_stop(LEDC_LOW_SPEED_MODE, (ledc_channel_t)PWM_CHANNEL, 0);  // ensure IR LED starts off
+
+  // initialize the NA and EU pushbutton pins as inputs with pull-up resistors enabled
+  gpio_config_t btn_conf = {
+    .pin_bit_mask = (1ULL << BUTTON_NA) | (1ULL << BUTTON_EU),
+    .mode         = GPIO_MODE_INPUT,
+    .pull_up_en   = GPIO_PULLUP_ENABLE,
+    .pull_down_en = GPIO_PULLDOWN_DISABLE,
+    .intr_type    = GPIO_INTR_DISABLE,
+  };
+  gpio_config(&btn_conf);
+
+  // "startOver" will become TRUE if the user pushes either the NA or EU push-button while transmitting the POWER-Codes
+  startOver = FALSE;
+
+  ESP_LOGI(TAG, ".....TV-B-Gone on an ESP32-C3 Super Mini board.....");
+  ESP_LOGI(TAG, "                       V0.2");
+}
+
+
+/****************************************/
+/****************************************/
+void loop() {
+  // check the two push-buttons
+  buttonStateNA = gpio_get_level((gpio_num_t)BUTTON_NA);      // buttonStateNA is normally HIGH, but LOW when NA button is pressed
+  buttonStateEU = gpio_get_level((gpio_num_t)BUTTON_EU);      // buttonStateEU is normally HIGH, but LOW when EU button is pressed
+
+Start_transmission:
+
+  if (startOver == TRUE) {
+    buttonStateNA = buttonStateNA_again;
+    buttonStateEU = buttonStateEU_again;
+    // "startOver" will become TRUE if the user pushes either the NA or EU push-button while transmitting the POWER-Codes
+    startOver = FALSE;
+    ESP_LOGI(TAG, "");
+    ESP_LOGI(TAG, "Transmission of all POWER-Codes about to start again from the beginning");
+    ESP_LOGI(TAG, "");
+  }
+
+  // check if either of the pushbuttons are pressed (both are LOW while pressed)
+  // NOTE: if both the NA and the EU push-buttons are pushed, then NA will be chosen
+  if ( (!buttonStateNA || !buttonStateEU) == HIGH ) {
+
+    vTaskDelay(pdMS_TO_TICKS(250));   // wait a while after pressing the NA or EU push-button
+
+    if (buttonStateNA == LOW) {
+      region = NA;
+      numCodes = num_NAcodes;   // number of POWER-Codes to transmit for the NA database
+      blinkLEDnTimes(3);        // blink the visible LED quickly 3 times to indicate NA
+      ESP_LOGI(TAG, "NA button pressed");
+      ESP_LOGI(TAG, "# of NA POWER-Codes: %d", numCodes);
+      ESP_LOGI(TAG, "");
+    }
+    else if (buttonStateEU == LOW) {
+      region = EU;
+      numCodes = num_EUcodes;  // number of POWER-Codes to transmit for the EU database
+      blinkLEDnTimes(6);       // blink the visible LED quickly 6 times to indicate EU
+      ESP_LOGI(TAG, "EU button pressed");
+      ESP_LOGI(TAG, "# of EU POWER-Codes: %d", numCodes);
+      ESP_LOGI(TAG, "");
+    }
+    else {
+      blinkLEDnTimes(25);    // blink the visible LED quickly 25 times to indicate an error (this should never happen)
+      DEBUGP( ESP_LOGI(TAG, "ERROR: no button pressed, yet transmission started") );
+    }
+
+    vTaskDelay(pdMS_TO_TICKS(500));   // wait a while after quickly blinking the visible LED and before starting transmission of POWER-Codes
+
+    // loop to transmit all POWER-Codes
+    for (int powerCodeCount=0; powerCodeCount<numCodes; powerCodeCount++) {
+
+      // get the address of the next POWER-Code into a pointer
+      if (region == NA) {
+        pwrCode_ptr = NApowerCodes[powerCodeCount];
+      }
+      else if (region == EU) {
+        pwrCode_ptr = EUpowerCodes[powerCodeCount];
+      }
+
+      // blip the visible LED (to indicate that a new POWER-Code is about to be transmitted on the IR LED)
+      gpio_set_level((gpio_num_t)VISLED, LOW);   // the built-in LED on the ESP32-C3 Super Mini is active-LOW (LOW turns ON the LED)
+      vTaskDelay(pdMS_TO_TICKS(VIS_LED_BLIP_TIME));
+      gpio_set_level((gpio_num_t)VISLED, HIGH);
+
+      // read the info from the IrCode table for this POWER-Code
+      carrierFreq = pwrCode_ptr->carrier_freq;     // Carrier Frequency for this POWER-Code
+      numPairs = pwrCode_ptr->num_pairs;           // number of On-Time/Off-Time pairs to transmit for this POWER-Code
+      pairsTab_ptr = (pwrCode_ptr->pairs);         // point to the Pairs table of unique On-Time/Off-Time pairs for this POWER-Code
+      sequenceTab_ptr = (pwrCode_ptr->sequence);   // point to the Sequence table of indices to the unique On-Time/Off-Time pairs for this POWER-Code
+
+      // now that we have read all of the needed info from the current POWER-Code,
+      // increment the pointer to the next POWER-Code in the table
+      pwrCode_ptr++;
+
+      #if DEBUG > 0
+      DEBUGP( ESP_LOGI(TAG, "The Carrier Frequency for this POWER-Code is: %" PRIu32, carrierFreq) );
+      DEBUGP( ESP_LOGI(TAG, "The # On-Time/Off-Time pairs for this POWER-Code is: %d", numPairs) );
+      if (DEBUG == 1) {
+        ESP_LOGI(TAG, "First 4 unique On-Time/Off-Time pairs:");
+        for (int i=0; i<8; i=i+2) {
+          ESP_LOGI(TAG, "  %" PRIu32 ",  %" PRIu32, pairsTab_ptr[i], pairsTab_ptr[i+1]);
+        }
+        ESP_LOGI(TAG, "Sequence:");
+        for (int i=0; i<numPairs; i++) {
+          ESP_LOGI(TAG, "  %d,", sequenceTab_ptr[i]);
+        }
+      }
+      #endif
+
+      ESP_LOGI(TAG, "Transmitting POWER-Code %d...", powerCodeCount);
+
+      // transmit all On-Time/Off-Time pairs for this POWER-Code
+      for (int i=0; i<numPairs; i++) {
+        pairsIndex = sequenceTab_ptr[i];        // read the next index from the POWER-Code's Sequence table -- this is an index to the POWER-Code's Pairs table (of unique On-Time/Off-Time pairs)
+        DEBUGP( ESP_LOGI(TAG, " %d: ", pairsIndex) );
+        pairsIndex = pairsIndex * 2;            // multiply the index by 2 since we want to index pairs in the Pairs table
+        OnTime = pairsTab_ptr[pairsIndex];      // read the On-Time from the POWER-Code's Pairs table
+        OffTime = pairsTab_ptr[pairsIndex+1];   // read the Off-Time from the POWER-Code's Pairs table
+        xmitPair( carrierFreq, OnTime, OffTime );
+      }
+
+      ESP_LOGI(TAG, "Done");
+
+      // delay for a while between sending POWER-Codes (to give IR receiver on TVs long enough to reset themselves after receiving other TV-B-Gone POWER-Codes)
+      vTaskDelay(pdMS_TO_TICKS(TIME_BETWEEN_CODES - VIS_LED_BLIP_TIME));   // Since we already waited for VIS_LED_BLIP_TIME msec, we can subtract this amount from TIME_BETWEEN_CODES
+
+      // check the two push-buttons to see if the user wants to start the transmission of POWER-Codes over from the start of the database
+      buttonStateNA_again = gpio_get_level((gpio_num_t)BUTTON_NA);      // buttonStateNA is normally HIGH, but LOW when NA button is pressed
+      buttonStateEU_again = gpio_get_level((gpio_num_t)BUTTON_EU);      // buttonStateEU is normally HIGH, but LOW when EU button is pressed
+      // check if either of the pushbuttons are pressed (both are LOW while pressed)
+      // if a button is pushed, then break from this main "for" loop so we can start the transmission of all POWER-Codes over from the beginning
+      if ( (!buttonStateNA_again || !buttonStateEU_again) == HIGH ) {
+        startOver = TRUE;
+        break;
+      }
+
+    }
+
+    if (startOver) goto Start_transmission;
+
+    ESP_LOGI(TAG, "");
+    if (buttonStateNA == LOW) {
+      ESP_LOGI(TAG, "Finished transmitting entire database for NA.");
+    }
+    else if (buttonStateEU == LOW) {
+      ESP_LOGI(TAG, "Finished transmitting entire database for EU.");
+    }
+    else {
+      DEBUGP( ESP_LOGI(TAG, "Finished transmitting entire database for ERROR.") );
+    }
+    ESP_LOGI(TAG, "");
+
+    vTaskDelay(pdMS_TO_TICKS(500));   // wait a while after transmission of POWER-Codes
+    if (buttonStateNA == LOW) {
+      blinkLEDnTimes(3);   // blink the visible LED quickly 3 times to indicate end of NA transmission
+    }
+    else if (buttonStateEU == LOW) {
+      blinkLEDnTimes(6);   // blink the visible LED quickly 6 times to indicate end of EU transmission
+    }
+    else {
+      blinkLEDnTimes(25);    // blink the visible LED quickly 25 times to indicate an error (this should never happen)
+    }
+    vTaskDelay(pdMS_TO_TICKS(500));   // wait a while after transmission of POWER-Codes
+
+  }
+
+  // neither NA nor EU push-button were pressed
+  else {
+    gpio_set_level((gpio_num_t)IRLED,  LOW);    // make sure that the IR LED is off
+    gpio_set_level((gpio_num_t)VISLED, HIGH);   // make sure that the visible LED is off (the built-in LED on the ESP32-C3 Super Mini is active-LOW (HIGH turns OFF the LED) )
+    vTaskDelay(pdMS_TO_TICKS(10));              // yield to IDLE task to prevent Task Watchdog from triggering
+  }
+
+}
+
+
+
+/*****************************************************/
+//      Functions
+/*****************************************************/
+
+
+
+/****************************************
+/   xmitPair()
+/
+/ Transmit one On-Time/Off-Time pair
+/
+/
+/ Explanation of how TV-B-Gone transmits POWER-Codes
+/ --------------------------------------------------
+/
+/ There are many kinds of encoding schemes for IR remote control codes.
+/ Yet, from my perspective, I don't care what type of IR code each of my POWER-Codes are.
+/ As long as TV-B-Gone turns TVs off, we're good!
+/ To accomplish this, each IR POWER-Code simply needs to be the same as the one the TV is expecting so that it turns Off.
+/
+/ TV-B-Gone transmits only POWER-Codes (and none of the other useless IR remote control codes, such as Channel-Up or Volume-Down...).
+/ With a few hundred Power-Codes, we can turn off virtually all TVs in public places in the world.
+/
+/ Since the TVs in public places are different in different parts of the world,
+/    the database of Power-Codes in TV-B-Gone is divided into two databases:
+/       * NA (North America, South America, Asia)
+/       * EU (Europe, Middle East, Africa, Australia, New Zealand)
+/
+/ The transmission sequence is:
+/   - most popular Power-Code
+/   - second most popular Power-Code
+/   - third most popular Power-Code
+/   - . . .
+/   - least popular Power-Code
+/
+/ There is a separate transmission sequence for NA and for EU.
+/
+/ To mimic any IR remote control code, I consider all IR POWER-Codes to be a series of "On-Times" and "Off-Times".
+/ When the IR LED is "On", it is usually pulsing at the "Carrier Frequency" of the POWER-Code.
+/ The length of time it is "On" is an "On-Time".
+/    (NOTE: Some POWER-Codes have no Carrier Frequency -- for these, "On" simply means that the IR LED is lit up for the On-Time.)
+/ When the IR LED is "Off", it is emitting no light at all.
+/ The length of time it is "Off" is an "Off-Time".
+/ Any POWER-Code is a sequence of the IR LED being "On" for a while, then "Off" for a while, "On" for a while, then "Off" for a while...
+/ If all of the various "On" times and "Off" times in the sequence mimic the timing that the TV expects,
+/    then the TV will turn off.  (Yay!)
+/ All POWER-Codes have a limited number of these "On-Time/Off-Time pairs".
+/ All of the POWER-Codes that I have seen have less than 16 unique pairs.
+/ So, transmitting any given POWER-Code requires determining all of the unique On-Time/Off-Time pairs that comprise that particular POWER-Code,
+/    and transmitting the appropriate sequence of On-Time/Off-Time pairs.
+/ In 2003-2004 I spent a year and a half of my life acquiring all of the POWER-Codes I could find.
+/    From each POWER-Code, I determined:
+/        the code's Carrier Frequency,
+/        the code's unique On-Time/Off-Time pairs,
+/        and the sequence of them that comprises each POWER-Code.
+/ All of this data is now open source (and has been since I released it in 2006).
+/
+/ This will be more clear with an example!
+/
+/ So, here is an example POWER-Code:
+/ ---------------------------------
+/
+/    Almost all of the SONY TVs in the world use one POWER-Code.
+/           The Carrier Frequency for the Sony POWER-Code is:  38,400 Hz (38.4 Khz).
+/           The Sony POWER-Code has only 4 unique On-Time/Off-Time pairs (in microseconds)
+/                       pair 0:   600 /   600
+/                       pair 1:   600 / 27000
+/                       pair 2:  1200 /   600
+/                       pair 3:  2400 /   600
+/    (NOTE: in C/C++, counting starts from 0, so the above pairs are numbered starting with "0".)
+/           The Sony POWER-Code is the following sequence of the above pairs:
+/                       3 2 0 2 0 2 0 0 2 0 0 0 1 3 0 0 2 0 2 0 0 2 0 0 0 1
+/           So, the first pair to be transmitted to the IR LED is: pair 3.
+/               That means that the IR LED blinks at its Carrier Frequency (38.4KHz) for 2400 usec, followed by the IR LED being off for 600 usec.
+/               Then pair 2: the IR LED blinks for 1200 usec followed by being off for 600 usec.
+/               Then pair 0: the IR LED blinks for 600 usec followed by being off for 600 usec.
+/               Then pair 2: the IR LED blinks for 1200 usec followed by being off for 600 usec.
+/               etc., till all 26 of the POWER-Code's pairs are transmitted.
+/                  If the resultant light from the IR LED hit a Sony TV, that Sony TV would be Off!  (Yay!)
+/
+****************************************/
+
+// xmitPair( carFreq, onTime, offTime )
+//
+// This function:
+//    Pulses the IR LED at the Carrier Frequency (given by carFreq) for the number of usec given by onTime,
+//    followed by the IR LED being off for the number of usec given by offTime
+//       (NOTE: if the Carrier Frequency is "0", then don't pulse the IR LED during "onTime", but merely turn the IR LED on for "onTime")
+//
+// This function uses the ESP-IDF LEDC driver, which makes use of a PWM timer
+//
+// global values needed for the LEDC driver:
+//    IRLED           --  the pin the IR LED is connected to
+//    DUTY_RESOLUTION --  PWM duty cycle resolution (which determines the range of values of DUTY_CYCLE)
+//    DUTY_CYCLE      --  PWM duty cycle (if DUTY_RESOLUTION=8, dutyCyle can be between 0 and 255)
+//    PWM_CHANNEL     --  PWM channel to use (for this sketch, which channel we use isn't important)
+//
+// arguments:
+//    carFreq  --  Carrier Frequency
+//    onTime   --  the amount of time (in usec) to pulse the IR LED at IRLED (if carFreq = 0, then the IR LED is simply on, and not pulsed)
+//    offTime  --  the amount of time (in usec) for the IR LED to be off (after the onTime)
+//
+
+void xmitPair(uint32_t carFreq, uint32_t onTime, uint32_t offTime) {
+  DEBUGP( ESP_LOGI(TAG, "%" PRIu32 ", %" PRIu32, onTime, offTime) );
+
+  // if the Carrier Frequency is 0, then there is no Carrier Frequency, so don't pulse the IR LED (it will be solidly On)
+  if (carFreq != 0) {
+    // update the timer frequency for this code, then enable PWM output
+    ledc_set_freq(LEDC_LOW_SPEED_MODE, LEDC_TIMER_0, carFreq);
+    ledc_set_duty(LEDC_LOW_SPEED_MODE, (ledc_channel_t)PWM_CHANNEL, DUTY_CYCLE);
+    ledc_update_duty(LEDC_LOW_SPEED_MODE, (ledc_channel_t)PWM_CHANNEL);
+  } else {
+    // IR LED "On" (no carrier -- solidly on): hold output HIGH via LEDC idle level
+    ledc_stop(LEDC_LOW_SPEED_MODE, (ledc_channel_t)PWM_CHANNEL, 1);
+  }
+  // "On" for the number of usec given in onTime
+  esp_rom_delay_us(onTime);
+
+  // IR LED "Off": stop PWM and hold output LOW
+  ledc_stop(LEDC_LOW_SPEED_MODE, (ledc_channel_t)PWM_CHANNEL, 0);
+  // keep the IR LED off for the number of usec given in offTime
+  esp_rom_delay_us(offTime);
+
+}
+
+
+
+/****************************************
+/   blinkLEDnTimes( numBlinks )
+/
+/ Quickly blink the visible LED the number of times given by "numBlinks"
+/
+/ global values needed:
+/    VISLED -- gives the GPIO pin that the visible LED is connected to
+/
+/ arguments:
+/     numBlinks -- the number of times to quickly blink the visible LED
+/
+****************************************/
+
+void blinkLEDnTimes(int numBlinks) {
+  for (int i=0; i<numBlinks; i++) {
+    gpio_set_level((gpio_num_t)VISLED, LOW);   // the built-in LED on the ESP32-C3 Super Mini is active-LOW (LOW turns ON the LED)
+    vTaskDelay(pdMS_TO_TICKS(VIS_LED_BLIP_TIME));
+    gpio_set_level((gpio_num_t)VISLED, HIGH);
+    vTaskDelay(pdMS_TO_TICKS(BLIP_TIME));
+  }
+}
+
+
+
+/****************************************
+/   app_main()
+/
+/   ESP-IDF entry point -- replaces Arduino's setup() and loop() runtime.
+/   Calls setup() once then calls loop() repeatedly, preserving the
+/   original program structure unchanged.
+/
+****************************************/
+
+extern "C" void app_main(void) {
+  setup();
+  while (1) {
+    loop();
+  }
+}

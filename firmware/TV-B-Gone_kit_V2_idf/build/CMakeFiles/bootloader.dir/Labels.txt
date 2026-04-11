@@ -1,0 +1,13 @@
+# Target labels
+ bootloader
+# Source files and their labels
+/Users/pedrominatel/Documents/Espressif/github/TV-B-Gone-kit_V2/firmware/TV-B-Gone_kit_V2_idf/build/CMakeFiles/bootloader
+/Users/pedrominatel/Documents/Espressif/github/TV-B-Gone-kit_V2/firmware/TV-B-Gone_kit_V2_idf/build/CMakeFiles/bootloader.rule
+/Users/pedrominatel/Documents/Espressif/github/TV-B-Gone-kit_V2/firmware/TV-B-Gone_kit_V2_idf/build/CMakeFiles/bootloader-complete.rule
+/Users/pedrominatel/Documents/Espressif/github/TV-B-Gone-kit_V2/firmware/TV-B-Gone_kit_V2_idf/build/bootloader-prefix/src/bootloader-stamp/bootloader-build.rule
+/Users/pedrominatel/Documents/Espressif/github/TV-B-Gone-kit_V2/firmware/TV-B-Gone_kit_V2_idf/build/bootloader-prefix/src/bootloader-stamp/bootloader-configure.rule
+/Users/pedrominatel/Documents/Espressif/github/TV-B-Gone-kit_V2/firmware/TV-B-Gone_kit_V2_idf/build/bootloader-prefix/src/bootloader-stamp/bootloader-download.rule
+/Users/pedrominatel/Documents/Espressif/github/TV-B-Gone-kit_V2/firmware/TV-B-Gone_kit_V2_idf/build/bootloader-prefix/src/bootloader-stamp/bootloader-install.rule
+/Users/pedrominatel/Documents/Espressif/github/TV-B-Gone-kit_V2/firmware/TV-B-Gone_kit_V2_idf/build/bootloader-prefix/src/bootloader-stamp/bootloader-mkdir.rule
+/Users/pedrominatel/Documents/Espressif/github/TV-B-Gone-kit_V2/firmware/TV-B-Gone_kit_V2_idf/build/bootloader-prefix/src/bootloader-stamp/bootloader-patch.rule
+/Users/pedrominatel/Documents/Espressif/github/TV-B-Gone-kit_V2/firmware/TV-B-Gone_kit_V2_idf/build/bootloader-prefix/src/bootloader-stamp/bootloader-update.rule
