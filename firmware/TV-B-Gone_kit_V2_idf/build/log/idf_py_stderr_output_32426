@@ -1,1 +1,0 @@
-Command: cmake -G Ninja -DPYTHON_DEPS_CHECKED=1 -DPYTHON=/Users/pedrominatel/.espressif/python_env/idf5.5_py3.14_env/bin/python -DESP_PLATFORM=1 -DCCACHE_ENABLE=0 /Users/pedrominatel/Documents/Espressif/github/TV-B-Gone-kit_V2/firmware/TV-B-Gone_kit_V2_idf

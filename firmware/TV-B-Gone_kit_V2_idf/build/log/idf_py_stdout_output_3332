@@ -1,0 +1,118 @@
+Command: /Users/pedrominatel/.espressif/python_env/idf5.5_py3.14_env/bin/python /Users/pedrominatel/esp/v5.5.1/esp-idf/tools/idf_monitor.py -p /dev/cu.usbmodem114201 -b 115200 --toolchain-prefix riscv32-esp-elf- --target esp32c3 --revision 3 --decode-panic backtrace /Users/pedrominatel/Documents/Espressif/github/TV-B-Gone-kit_V2/firmware/TV-B-Gone_kit_V2_idf/build/TV-B-Gone_kit_V2.elf /Users/pedrominatel/Documents/Espressif/github/TV-B-Gone-kit_V2/firmware/TV-B-Gone_kit_V2_idf/build/bootloader/bootloader.elf -m '/Users/pedrominatel/.espressif/python_env/idf5.5_py3.14_env/bin/python' '/Users/pedrominatel/esp/v5.5.1/esp-idf/tools/idf.py' '-p' '/dev/cu.usbmodem114201'
+ESP-ROM:esp32c3-api1-20210207
+Build:Feb  7 2021
+rst:0x15 (USB_UART_CHIP_RESET),boot:0xe (SPI_FAST_FLASH_BOOT)
+Saved PC:0x40381e5e
+SPIWP:0xee
+mode:DIO, clock div:1
+load:0x3fcd5820,len:0x15ac
+load:0x403cbf10,len:0xc34
+load:0x403ce710,len:0x2fd0
+entry 0x403cbf1a
+[0;32mI (24) boot: ESP-IDF v5.5.1-dirty 2nd stage bootloader[0m
+[0;32mI (24) boot: compile time Apr 11 2026 15:52:07[0m
+[0;32mI (25) boot: chip revision: v0.4[0m
+[0;32mI (25) boot: efuse block revision: v1.3[0m
+[0;32mI (29) boot.esp32c3: SPI Speed      : 80MHz[0m
+[0;32mI (32) boot.esp32c3: SPI Mode       : DIO[0m
+[0;32mI (36) boot.esp32c3: SPI Flash Size : 2MB[0m
+[0;32mI (40) boot: Enabling RNG early entropy source...[0m
+[0;32mI (44) boot: Partition Table:[0m
+[0;32mI (47) boot: ## Label            Usage          Type ST Offset   Length[0m
+[0;32mI (53) boot:  0 nvs              WiFi data        01 02 00009000 00006000[0m
+[0;32mI (60) boot:  1 phy_init         RF data          01 01 0000f000 00001000[0m
+[0;32mI (66) boot:  2 factory          factory app      00 00 00010000 00100000[0m
+[0;32mI (73) boot: End of partition table[0m
+[0;32mI (76) esp_image: segment 0: paddr=00010020 vaddr=3c020020 size=09914h ( 39188) map[0m
+[0;32mI (90) esp_image: segment 1: paddr=0001993c vaddr=3fc8c000 size=066dch ( 26332) load[0m
+[0;32mI (96) esp_image: segment 2: paddr=00020020 vaddr=42000020 size=19780h (104320) map[0m
+[0;32mI (115) esp_image: segment 3: paddr=000397a8 vaddr=3fc926dc size=0113ch (  4412) load[0m
+[0;32mI (116) esp_image: segment 4: paddr=0003a8ec vaddr=40380000 size=0bf78h ( 49016) load[0m
+[0;32mI (128) esp_image: segment 5: paddr=0004686c vaddr=50000000 size=00020h (    32) load[0m
+[0;32mI (133) boot: Loaded app from partition at offset 0x10000[0m
+[0;32mI (133) boot: Disabling RNG early entropy source...[0m
+[0;32mI (147) cpu_start: Unicore app[0m
+[0;32mI (156) cpu_start: Pro cpu start user code[0m
+[0;32mI (156) cpu_start: cpu freq: 160000000 Hz[0m
+[0;32mI (156) app_init: Application information:[0m
+[0;32mI (156) app_init: Project name:     TV-B-Gone_kit_V2[0m
+[0;32mI (161) app_init: App version:      d03788d-dirty[0m
+[0;32mI (165) app_init: Compile time:     Apr 11 2026 15:50:06[0m
+[0;32mI (170) app_init: ELF file SHA256:  1058a6354...[0m
+[0;32mI (174) app_init: ESP-IDF:          v5.5.1-dirty[0m
+[0;32mI (179) efuse_init: Min chip rev:     v0.3[0m
+[0;32mI (183) efuse_init: Max chip rev:     v1.99 [0m
+[0;32mI (187) efuse_init: Chip rev:         v0.4[0m
+[0;32mI (191) heap_init: Initializing. RAM available for dynamic allocation:[0m
+[0;32mI (197) heap_init: At 3FC94710 len 0002B8F0 (174 KiB): RAM[0m
+[0;32mI (202) heap_init: At 3FCC0000 len 0001C710 (113 KiB): Retention RAM[0m
+[0;32mI (208) heap_init: At 3FCDC710 len 00002950 (10 KiB): Retention RAM[0m
+[0;32mI (214) heap_init: At 50000020 len 00001FC8 (7 KiB): RTCRAM[0m
+[0;32mI (220) spi_flash: detected chip: generic[0m
+[0;32mI (223) spi_flash: flash io: dio[0m
+[0;33mW (226) spi_flash: Detected size(4096k) larger than the size in the binary image header(2048k). Using the size in the binary image header.[0m
+[0;32mI (238) sleep_gpio: Configure to isolate all GPIO pins in sleep state[0m
+[0;32mI (244) sleep_gpio: Enable automatic switching of GPIO sleep configuration[0m
+[0;32mI (251) main_task: Started on CPU0[0m
+[0;32mI (251) main_task: Calling app_main()[0m
+[0;32mI (251) TV-B-Gone: .....TV-B-Gone on an ESP32-C3 Super Mini board.....[0m
+[0;32mI (261) TV-B-Gone:                        V0.2[0m
+[0;32mI (261) main_task: Returned from app_main()[0m
+[0;32mI (5271) TV-B-Gone: EU button pressed[0m
+[0;32mI (5271) TV-B-Gone: # of EU POWER-Codes: 145[0m
+[0;32mI (5271) TV-B-Gone: [0m
+[0;32mI (5791) TV-B-Gone: Transmitting POWER-Code 0...[0m
+[0;32mI (5921) TV-B-Gone: Done[0m
+[0;32mI (6121) TV-B-Gone: Transmitting POWER-Code 1...[0m
+[0;32mI (6291) TV-B-Gone: Done[0m
+[0;32mI (6491) TV-B-Gone: Transmitting POWER-Code 2...[0m
+[0;32mI (6581) TV-B-Gone: Done[0m
+[0;32mI (6781) TV-B-Gone: Transmitting POWER-Code 3...[0m
+[0;32mI (6971) TV-B-Gone: Done[0m
+[0;32mI (7171) TV-B-Gone: Transmitting POWER-Code 4...[0m
+[0;32mI (7391) TV-B-Gone: Done[0m
+[0;32mI (7591) TV-B-Gone: Transmitting POWER-Code 5...[0m
+[0;32mI (7751) TV-B-Gone: Done[0m
+[0;32mI (7951) TV-B-Gone: Transmitting POWER-Code 6...[0m
+[0;32mI (8081) TV-B-Gone: Done[0m
+[0;32mI (8281) TV-B-Gone: Transmitting POWER-Code 7...[0m
+[0;32mI (8501) TV-B-Gone: Done[0m
+[0;32mI (8701) TV-B-Gone: Transmitting POWER-Code 8...[0m
+[0;32mI (8831) TV-B-Gone: Done[0m
+[0;32mI (9031) TV-B-Gone: Transmitting POWER-Code 9...[0m
+[0;32mI (9261) TV-B-Gone: Done[0m
+[0;32mI (9461) TV-B-Gone: Transmitting POWER-Code 10...[0m
+[0;32mI (9681) TV-B-Gone: Done[0m
+[0;32mI (9881) TV-B-Gone: Transmitting POWER-Code 11...[0m
+[0;32mI (10101) TV-B-Gone: Done[0m
+[0;32mI (10301) TV-B-Gone: Transmitting POWER-Code 12...[0m
+[0;32mI (10361) TV-B-Gone: Done[0m
+[0;32mI (10561) TV-B-Gone: Transmitting POWER-Code 13...[0m
+[0;32mI (10621) TV-B-Gone: Done[0m
+[0;32mI (10821) TV-B-Gone: Transmitting POWER-Code 14...[0m
+[0;32mI (10951) TV-B-Gone: Done[0m
+[0;32mI (11151) TV-B-Gone: Transmitting POWER-Code 15...[0m
+[0;32mI (11211) TV-B-Gone: Done[0m
+[0;32mI (11411) TV-B-Gone: Transmitting POWER-Code 16...[0m
+[0;32mI (11531) TV-B-Gone: Done[0m
+[0;32mI (11731) TV-B-Gone: Transmitting POWER-Code 17...[0m
+[0;32mI (11921) TV-B-Gone: Done[0m
+[0;32mI (12121) TV-B-Gone: Transmitting POWER-Code 18...[0m
+[0;32mI (12221) TV-B-Gone: Done[0m
+[0;32mI (12421) TV-B-Gone: Transmitting POWER-Code 19...[0m
+[0;32mI (12751) TV-B-Gone: Done[0m
+[0;32mI (12951) TV-B-Gone: Transmitting POWER-Code 20...[0m
+[0;32mI (13031) TV-B-Gone: Done[0m
+[0;32mI (13231) TV-B-Gone: Transmitting POWER-Code 21...[0m
+[0;32mI (13461) TV-B-Gone: Done[0m
+[0;32mI (13661) TV-B-Gone: Transmitting POWER-Code 22...[0m
+[0;32mI (13891) TV-B-Gone: Done[0m
+[0;32mI (14091) TV-B-Gone: Transmitting POWER-Code 23...[0m
+[0;32mI (14191) TV-B-Gone: Done[0m
+[0;32mI (14391) TV-B-Gone: Transmitting POWER-Code 24...[0m
+[0;32mI (14581) TV-B-Gone: Done[0m
+[0;32mI (14781) TV-B-Gone: Transmitting POWER-Code 25...[0m
+[0;32mI (14841) TV-B-Gone: Done[0m
+[0;32mI (15041) TV-B-Gone: Transmitting POWER-Code 26...[0m
+[0;32mI (15431) TV-B-Gone: Done[0m
+[0;32mI (15631) TV-B-Gone: Transmitting POWER-Code 27...[0m

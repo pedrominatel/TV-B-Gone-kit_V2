@@ -53,7 +53,7 @@ TV-B-Gone main.h for Arduino version 0.002
 **************************************************/
 
 
-#include <cstdint>      // needed for ESP32 on the Arduino IDE (must be declared before any other #include)
+#include <stdint.h>     // uint8_t, uint32_t, etc.
 
 
 /*
@@ -107,7 +107,3 @@ struct IrCode {
   uint32_t * pairs;           // pointer to 'Pairs' table for the POWER-Code (which contains the unique On-Time/Off-Time pairs)
   uint8_t * sequence;         // pointer to 'Sequence' table for the POWER-Code (which contains the sequence of On-Time/Off-Time pairs to transmit)
 };
-
-// function prototypes
-void xmitPair(uint32_t carFreq, uint32_t onTime, uint32_t offTime);
-void blinkLEDnTimes(int numBlinks);
