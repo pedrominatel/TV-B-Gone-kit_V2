@@ -1,0 +1,23 @@
+name: tvbgone_core_ci
+
+on:
+  push:
+    paths:
+      - "firmware/component/tvbgone_core/**"
+      - ".github/workflows/tvbgone-core-ci.yml"
+  pull_request:
+    paths:
+      - "firmware/component/tvbgone_core/**"
+      - ".github/workflows/tvbgone-core-ci.yml"
+
+jobs:
+  build-example:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: espressif/esp-idf-ci-action@v1
+        with:
+          esp_idf_version: v5.5.1
+          target: esp32c3
+          path: firmware/component/tvbgone_core/examples/tvbgone_esp32c3_supermini
+          command: idf.py set-target esp32c3 build
