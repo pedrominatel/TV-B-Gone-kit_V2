@@ -118,3 +118,7 @@ XUNIT_RESULT*.xml
 # sdkconfig files
 sdkconfig
 sdkconfig.old
+
+# Agents
+.agents/
+AGENTS.md

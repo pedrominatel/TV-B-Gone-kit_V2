@@ -1,0 +1,8 @@
+version: "0.1.0"
+description: TV-B-Gone core logic packaged as a reusable ESP-IDF component.
+url: https://github.com/pedrominatel/TV-B-Gone-kit_V2
+repository: https://github.com/pedrominatel/TV-B-Gone-kit_V2.git
+documentation: https://github.com/pedrominatel/TV-B-Gone-kit_V2/tree/main/firmware/component/tvbgone_core
+license: "CC-BY-SA-4.0"
+targets:
+  - esp32c3
