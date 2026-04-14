@@ -38,19 +38,18 @@ jobs:
         run: |
           pip install esptool --quiet
           BUILD=firmware/component/tvbgone_core/examples/tvbgone_esp32c3_supermini/build
-          esptool.py --chip esp32c3 merge_bin \
-            --flash_mode dio \
-            --flash_freq 80m \
-            --flash_size 2MB \
-            -o "${BUILD}/tvbgone_esp32c3.bin" \
+          mkdir -p pages-staging
+          esptool --chip esp32c3 merge-bin \
+            --flash-mode dio \
+            --flash-freq 80m \
+            --flash-size 2MB \
+            -o pages-staging/tvbgone_esp32c3.bin \
             0x0     "${BUILD}/bootloader/bootloader.bin" \
             0x8000  "${BUILD}/partition_table/partition-table.bin" \
             0x10000 "${BUILD}/tvbgone_esp32c3_supermini.bin"
 
       - name: Stage GitHub Pages content
         run: |
-          mkdir -p pages-staging
-          cp firmware/component/tvbgone_core/examples/tvbgone_esp32c3_supermini/build/tvbgone_esp32c3.bin pages-staging/
           cp launchpad/config.toml pages-staging/
 
       - name: Configure GitHub Pages
