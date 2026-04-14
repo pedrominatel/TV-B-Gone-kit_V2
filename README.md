@@ -7,6 +7,14 @@ I am currently working on a new (V2) TV-B-Gone kit. The first iteration uses a s
 Photo of a completed first draft of the kit, for giving workshops:  
 ![PXL_20260212_211537771](https://github.com/user-attachments/assets/2c68db52-bae4-463f-90b8-3bed8a5e421f)
 
+## Flash the Firmware
+
+You can flash the latest firmware directly to your ESP32-C3 Super Mini from your browser — no toolchain required:
+
+[![Try it with ESP Launchpad](https://espressif.github.io/esp-launchpad/assets/try_with_launchpad.png)](https://espressif.github.io/esp-launchpad/?flashConfigURL=https://pedrominatel.github.io/TV-B-Gone-kit_V2/config.toml)
+
+Connect your ESP32-C3 Super Mini via USB, click the badge above, select **tvbgone**, and press **Flash**.
+
 ## Project Info  
   
 Imagine a dystopian future, filled with monitors, marketing at us everywhere we go. Sadly, we are living that future now. This kit is super useful, not only for yourself, but for everyone! And while maybe that's dramatic, the TV-B-Gone is perfect for playing pranks on your friends during the Super Bowl or getting some peace and quiet during dinner.  
