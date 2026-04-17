@@ -74,6 +74,18 @@ function getPortLabel(port) {
   return `${vendor}:${product}`;
 }
 
+function uint8ArrayToBinaryString(bytes) {
+  const chunkSize = 0x8000;
+  let binary = "";
+
+  for (let offset = 0; offset < bytes.length; offset += chunkSize) {
+    const chunk = bytes.subarray(offset, offset + chunkSize);
+    binary += String.fromCharCode(...chunk);
+  }
+
+  return binary;
+}
+
 function makeTerminal() {
   return {
     clean() {
@@ -137,10 +149,11 @@ async function ensureFirmware() {
   const total = Number(response.headers.get("content-length")) || 0;
   if (!response.body || !total) {
     const buffer = await response.arrayBuffer();
+    const bytes = new Uint8Array(buffer);
     firmwareStatus.textContent = `Merged image ready (${buffer.byteLength} bytes)`;
     setProgress(22, "Firmware ready");
     appendLog(`Downloaded ${buffer.byteLength} bytes of firmware`);
-    return new Uint8Array(buffer);
+    return uint8ArrayToBinaryString(bytes);
   }
 
   const reader = response.body.getReader();
@@ -169,7 +182,7 @@ async function ensureFirmware() {
   firmwareStatus.textContent = `Merged image ready (${received} bytes)`;
   setProgress(22, "Firmware ready");
   appendLog(`Downloaded ${received} bytes of firmware`);
-  return merged;
+  return uint8ArrayToBinaryString(merged);
 }
 
 async function connectDevice() {
