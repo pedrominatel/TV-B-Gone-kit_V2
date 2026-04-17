@@ -7,6 +7,7 @@ on:
     paths:
       - "firmware/component/tvbgone_core/**"
       - "launchpad/**"
+      - "webflasher/**"
       - ".github/workflows/pages-deploy.yml"
 
 # Required permissions for GitHub Pages deployment
@@ -50,6 +51,7 @@ jobs:
 
       - name: Stage GitHub Pages content
         run: |
+          cp -R webflasher/. pages-staging/
           cp launchpad/config.toml pages-staging/
 
       - name: Configure GitHub Pages
