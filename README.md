@@ -11,20 +11,9 @@ Photo of a completed first draft of the kit, for giving workshops:
 
 You can flash the latest firmware directly to your ESP32-C3 Super Mini from your browser — no toolchain required:
 
-[Open the TV-B-Gone webflasher](https://pedrominatel.github.io/TV-B-Gone-kit_V2/)
+[![Open the TV-B-Gone webflasher](graphics/tv-b-gone-flash.png)](https://pedrominatel.github.io/TV-B-Gone-kit_V2/)
 
-Connect your ESP32-C3 Super Mini via USB, click the badge above, press **Connect**, select the serial port for the board, then press **Flash Firmware**.
-
-For local testing, serve the repository with a static server and open `http://localhost:8008/webflasher/` in Chrome or Edge:
-
-```bash
-python3 -m http.server 8008
-```
-
-You can either:
-- generate `webflasher/tvbgone_esp32c3.bin` from the current ESP-IDF build with `./scripts/prepare-webflasher-local.sh`
-
-The webflasher now ships its `esptool-js` dependency locally, so local testing does not depend on an external CDN.
+Connect your board, click the badge above, press **Connect**, select the serial port for the board, then press **Flash Firmware**.
 
 ## Project Info  
   
