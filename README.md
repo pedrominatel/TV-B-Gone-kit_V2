@@ -54,26 +54,15 @@ idf.py -p <PORT> flash monitor
 
 See [`firmware/TV-B-Gone-ESP-IDF/README.md`](firmware/TV-B-Gone-ESP-IDF/README.md) for full build, flash, and configuration instructions.
 
-### Reusable ESP-IDF Component (`firmware/component/tvbgone_core`)
+### Reusable ESP-IDF Component
 
-The TV-B-Gone transmit logic and world power-code database are also packaged as a reusable **ESP-IDF component** (`tvbgone_core`) for integration into other ESP-IDF projects.
+The TV-B-Gone ESP-IDF application now consumes the reusable `tvbgone_core`
+implementation from the [Espressif Component Registry](https://components.espressif.com)
+as `pedrominatel/tv-b-gone`.
 
-- **Version:** 0.1.0
-- **Target:** `esp32c3`
-- **License:** CC-BY-SA-4.0
-- Depends on `driver` and `esp_driver_rmt`
-- Prepared for publication on the [Espressif Component Registry](https://components.espressif.com)
-
-Minimal usage:
-```c
-tvbgone_core_config_t config;
-tvbgone_core_get_default_config(&config);
-ESP_ERROR_CHECK(tvbgone_core_start(&config));
-```
-
-A reference example application is included at [`firmware/component/tvbgone_core/examples/tvbgone_esp32c3_supermini`](firmware/component/tvbgone_core/examples/tvbgone_esp32c3_supermini).
-
-See [`firmware/component/tvbgone_core/README.md`](firmware/component/tvbgone_core/README.md) for full API and build instructions.
+The board-specific wrapper remains in
+[`firmware/TV-B-Gone-ESP-IDF`](firmware/TV-B-Gone-ESP-IDF), where GPIO
+assignments stay configurable through `idf.py menuconfig`.
 
 ### Arduino Sketch (`firmware/TV-B-Gone-Arduino`)
 

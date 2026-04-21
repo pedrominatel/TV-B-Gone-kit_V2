@@ -5,7 +5,7 @@ on:
     branches:
       - main
     paths:
-      - "firmware/component/tvbgone_core/**"
+      - "firmware/TV-B-Gone-ESP-IDF/**"
       - "launchpad/**"
       - "webflasher/**"
       - ".github/workflows/pages-deploy.yml"
@@ -32,13 +32,13 @@ jobs:
         with:
           esp_idf_version: v5.5.1
           target: esp32c3
-          path: firmware/component/tvbgone_core/examples/tvbgone_esp32c3_supermini
+          path: firmware/TV-B-Gone-ESP-IDF
           command: idf.py set-target esp32c3 build
 
       - name: Merge binaries into a single flashable image
         run: |
           pip install esptool --quiet
-          BUILD=firmware/component/tvbgone_core/examples/tvbgone_esp32c3_supermini/build
+          BUILD=firmware/TV-B-Gone-ESP-IDF/build
           mkdir -p pages-staging
           esptool --chip esp32c3 merge-bin \
             --flash-mode dio \
@@ -47,7 +47,7 @@ jobs:
             -o pages-staging/tvbgone_esp32c3.bin \
             0x0     "${BUILD}/bootloader/bootloader.bin" \
             0x8000  "${BUILD}/partition_table/partition-table.bin" \
-            0x10000 "${BUILD}/tvbgone_esp32c3_supermini.bin"
+            0x10000 "${BUILD}/TV-B-Gone-ESP-IDF.bin"
 
       - name: Stage GitHub Pages content
         run: |

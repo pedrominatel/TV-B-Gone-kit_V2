@@ -3,7 +3,7 @@ menu "TV-B-Gone Configuration"
 config TVBGONE_VISLED_GPIO
     int "Visible LED GPIO"
     range 0 21
-    default 13
+    default 8
     help
         GPIO used for the visible status LED.
 
