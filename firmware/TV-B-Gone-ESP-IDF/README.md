@@ -1,6 +1,6 @@
 # TV-B-Gone Kit V2 — ESP-IDF Firmware
 
-ESP-IDF firmware for the TV-B-Gone Kit V2, targeting the **ESP32-C3 Super Mini** board. Written in plain C, using FreeRTOS and the ESP-IDF RMT driver for precise IR signal generation.
+ESP-IDF firmware for the TV-B-Gone Kit V2, targeting the **ESP32-C3 Super Mini** board. The project uses the external Component Manager packages `pedrominatel/tv-b-gone` for the TV-B-Gone core logic and `espressif/button` for button click handling, while keeping this application as a thin board-specific wrapper.
 
 ## Overview
 
@@ -9,7 +9,7 @@ This application transmits IR power-off codes for a wide range of television bra
 - **NA** — North America, Asia, and the rest of the world not covered by EU (~130 codes)
 - **EU** — Europe, Middle East, Australia, New Zealand, and parts of Africa and South America (~230 codes)
 
-Press the NA or EU pushbutton to transmit the corresponding code database. All transmission logic runs inside a FreeRTOS task. Microsecond-accurate IR pulses are generated using the RMT peripheral; inter-code gaps use `vTaskDelay()` to yield to the scheduler.
+Single-press the NA or EU pushbutton to transmit the corresponding code database. Double-press either button to stop an active transmission. The reusable `tvbgone_core` component owns IR transmission, while this project keeps the board-specific button handling and visible LED behavior.
 
 ## Requirements
 
@@ -71,19 +71,18 @@ Navigate to **TV-B-Gone Configuration**:
 
 | File | Description |
 |------|-------------|
-| `main/main.c` | Application entry point, hardware init, FreeRTOS task, RMT IR transmission |
-| `main/main.h` | Pin definitions, region constants, `IrCode` struct, macro definitions |
-| `main/WORLDcodes.cpp` | NA and EU IR power-code databases |
+| `main/main.c` | Application entry point that configures `tvbgone_core` and button click handlers |
+| `main/idf_component.yml` | ESP Component Manager manifest for `pedrominatel/tv-b-gone` and `espressif/button` |
 | `main/Kconfig.projbuild` | Menuconfig options for GPIO assignments |
 | `main/CMakeLists.txt` | Component registration |
 | `CMakeLists.txt` | Project CMake file |
 
 ## Usage
 
-1. Press the **NA** button to transmit the North America/Asia code database.
-2. Press the **EU** button to transmit the Europe/Africa/Oceania code database.
-3. The visible LED blinks **3 times** for NA or **6 times** for EU at the start and end of each run, and blips briefly before each code is sent.
-4. Press either button again during transmission to restart from the beginning.
+1. Single-press the **NA** button to transmit the North America/Asia code database.
+2. Single-press the **EU** button to transmit the Europe/Africa/Oceania code database.
+3. Double-press either button to stop an active transmission.
+4. The visible LED blinks **3 times** for NA or **6 times** for EU at the start and end of each run, and blips briefly before each code is sent.
 
 ## License
 
